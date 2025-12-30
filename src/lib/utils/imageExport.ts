@@ -21,7 +21,7 @@ export async function exportCardAsImage(options: ExportOptions = {}): Promise<vo
 		throw new Error('Card element not found');
 	}
 
-	const { quality = 1.0, pixelRatio = 2 } = options;
+	const { quality = 1.0, pixelRatio = 4 } = options;
 
 	const dataUrl = await toPng(cardElement, {
 		quality,

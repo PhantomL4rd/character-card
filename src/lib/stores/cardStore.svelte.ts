@@ -37,7 +37,17 @@ function createCardStore() {
 			return cardData;
 		},
 		get canExport() {
-			return cardData.characterName.trim().length > 0;
+			return cardData.characterName.trim().length > 0 && cardData.image.src !== null;
+		},
+		get missingRequirements(): string[] {
+			const missing: string[] = [];
+			if (cardData.characterName.trim().length === 0) {
+				missing.push('キャラクター名');
+			}
+			if (cardData.image.src === null) {
+				missing.push('画像');
+			}
+			return missing;
 		},
 		updateCharacterName(name: string) {
 			cardData.characterName = name;

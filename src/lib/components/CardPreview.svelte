@@ -7,8 +7,9 @@
 
 	interface Props {
 		interactive?: boolean;
+		exportMode?: boolean;
 	}
-	let { interactive = false }: Props = $props();
+	let { interactive = false, exportMode = false }: Props = $props();
 
 	let crop = $state({ x: 0, y: 0 });
 	let zoom = $state(1);
@@ -225,36 +226,26 @@
 
 <div class="space-y-2">
 	<div
-		id="card-preview"
+		id={exportMode ? 'card-preview' : undefined}
 		class="relative overflow-hidden rounded-lg shadow-xl {aspectClass} bg-base-300"
 		bind:this={containerEl}
 	>
 		{#if cardStore.data.image.src}
-			{#if interactive}
-				<!-- インタラクティブモード: svelte-easy-cropを使用 -->
-				<div class="absolute inset-0">
-					<Cropper
-						image={displayImage}
-						bind:crop
-						bind:zoom
-						{aspect}
-						{minZoom}
-						maxZoom={Math.max(10, minZoom + 5)}
-						{cropSize}
-						cropShape="rect"
-						showGrid={true}
-						oncropcomplete={handleCropComplete}
-					/>
-				</div>
-			{:else}
-				<!-- 静的モード: 保存された位置で表示（回転済み画像） -->
-				<img
-					src={displayImage}
-					alt="Character"
-					class="absolute inset-0 w-full h-full object-cover"
-					style="transform: translate({crop.x}px, {crop.y}px) scale({zoom});"
+			<!-- Cropperを常に使用（エクスポート時はグリッド非表示） -->
+			<div class="absolute inset-0">
+				<Cropper
+					image={displayImage}
+					bind:crop
+					bind:zoom
+					{aspect}
+					{minZoom}
+					maxZoom={Math.max(10, minZoom + 5)}
+					{cropSize}
+					cropShape="rect"
+					showGrid={interactive && !exportMode}
+					oncropcomplete={handleCropComplete}
 				/>
-			{/if}
+			</div>
 		{:else}
 			<div class="absolute inset-0 flex items-center justify-center text-base-content/50">
 				<span class="text-sm">画像をアップロードしてください</span>
@@ -264,20 +255,20 @@
 		<!-- テキストオーバーレイ -->
 		{#if cardStore.data.characterName}
 			<div class="absolute inset-0 flex p-4 {positionClasses()} pointer-events-none z-10">
-				<div class="{themeClasses} p-4 rounded-lg backdrop-blur-sm max-w-[85%]">
-					<h2 class="text-xl font-bold">{cardStore.data.characterName}</h2>
+				<div class="{themeClasses} p-2 rounded-lg backdrop-blur-sm max-w-[85%]">
+					<h2 class="text-sm font-bold">{cardStore.data.characterName}</h2>
 
 					{#if cardStore.data.world && cardStore.data.dataCenter}
-						<p class="text-sm opacity-80">{cardStore.data.world} @ {cardStore.data.dataCenter}</p>
+						<p class="text-[8px] opacity-80">{cardStore.data.world} @ {cardStore.data.dataCenter}</p>
 					{/if}
 
 					{#if selectedJobs.length > 0}
-						<div class="flex flex-wrap gap-1 mt-2">
+						<div class="flex flex-wrap gap-0.5 mt-1">
 							{#each selectedJobs as job}
 								<img
 									src="/icons/jobs/{job.nameEn}.png"
 									alt={job.name}
-									class="w-6 h-6"
+									class="w-2 h-2"
 									title={job.name}
 								/>
 							{/each}
@@ -285,7 +276,7 @@
 					{/if}
 
 					{#if hasPlayStyle}
-						<div class="text-sm mt-2 opacity-90">
+						<div class="text-[8px] mt-1 opacity-90">
 							{#if attitudeLabel}
 								<span class="mr-2 font-medium">{attitudeLabel}</span>
 							{/if}
@@ -296,7 +287,7 @@
 					{/if}
 
 					{#if hasLoginTime}
-						<div class="text-sm mt-1 opacity-80">
+						<div class="text-[8px] mt-0.5 opacity-80">
 							{dayLabels}
 							{#if dayLabels && timeLabels}・{/if}
 							{timeLabels}
@@ -306,7 +297,7 @@
 			</div>
 		{/if}
 
-		<div class="absolute bottom-2 right-2 text-xs {copyrightClasses} pointer-events-none z-10">
+		<div class="absolute bottom-2 right-2 text-[6px] {copyrightClasses} pointer-events-none z-10">
 			© SQUARE ENIX
 		</div>
 	</div>
