@@ -4,6 +4,7 @@
 	import StepPlayStyle from './steps/StepPlayStyle.svelte';
 	import StepLoginTime from './steps/StepLoginTime.svelte';
 	import StepDesign from './steps/StepDesign.svelte';
+	import { cardStore } from '$lib/stores/cardStore.svelte';
 
 	interface Props {
 		currentStep: number;
@@ -13,11 +14,13 @@
 	}
 
 	const { currentStep, isExporting, exportError, onExport }: Props = $props();
+
+	const isPortrait = $derived(cardStore.data.design.orientation === 'portrait');
 </script>
 
 <div class="p-4 space-y-4">
 	<!-- プレビュー -->
-	<div class="max-w-md mx-auto">
+	<div class={isPortrait ? 'max-w-md mx-auto' : 'max-w-2xl mx-auto'}>
 		<CardPreview interactive={true} exportMode={false} />
 	</div>
 

@@ -25,15 +25,8 @@
 		cardStore.data.design.theme === 'dark' ? 'bg-black/60 text-white' : 'bg-white/60 text-black'
 	);
 
-	const copyrightClasses = $derived(
-		cardStore.data.design.theme === 'dark' ? 'text-white/80' : 'text-black/80'
-	);
-
-	const copyrightShadow = $derived(
-		cardStore.data.design.theme === 'dark'
-			? '0 0 3px rgba(0,0,0,0.8), 0 0 6px rgba(0,0,0,0.6)'
-			: '0 0 3px rgba(255,255,255,0.8), 0 0 6px rgba(255,255,255,0.6)'
-	);
+	// コピーライト：白文字＋黒縁取り（8方向text-shadow）
+	const copyrightOutline = '-1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, -1px 0 0 #000, 1px 0 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 1px 1px 0 #000';
 
 	const positionClasses = $derived(() => {
 		const v = { top: 'items-start', center: 'items-center', bottom: 'items-end' };
@@ -71,8 +64,8 @@
 
 	// カードの向きはストアのorientation設定から決定
 	const isPortrait = $derived(cardStore.data.design.orientation === 'portrait');
-	const aspectClass = $derived(isPortrait ? 'aspect-[9/16]' : 'aspect-[16/9]');
-	const aspect = $derived(isPortrait ? 9 / 16 : 16 / 9);
+	const aspectClass = $derived(isPortrait ? 'aspect-[3/4]' : 'aspect-[16/9]');
+	const aspect = $derived(isPortrait ? 3 / 4 : 16 / 9);
 
 	// Cropperに渡す画像（回転済み）- nullの場合はundefinedに変換
 	const displayImage = $derived(rotatedImageSrc ?? cardStore.data.image.src ?? undefined);
@@ -263,10 +256,10 @@
 		{#if cardStore.data.characterName}
 			<div class="absolute inset-0 flex p-4 {positionClasses()} pointer-events-none z-10">
 				<div class="{themeClasses} p-2 rounded-lg backdrop-blur-sm max-w-[75%]">
-					<h2 class="text-md font-bold">{cardStore.data.characterName}</h2>
+					<h2 class="text-xl font-bold">{cardStore.data.characterName}</h2>
 
 					{#if cardStore.data.dataCenter}
-						<p class="text-[10px]">
+						<p class="text-xs">
 							{#if cardStore.data.world}
 								{cardStore.data.world} @ {cardStore.data.dataCenter}
 							{:else}
@@ -289,7 +282,7 @@
 					{/if}
 
 					{#if hasPlayStyle}
-						<div class="text-[10px]">
+						<div class="text-xs">
 							<div class="flex items-center gap-1 font-semibold">
 								<Gamepad2 size={8} class="shrink-0" />
 								<span>プレイスタイル</span>
@@ -306,7 +299,7 @@
 					{/if}
 
 					{#if hasLoginTime}
-						<div class="text-[10px]">
+						<div class="text-xs">
 							<div class="flex items-center gap-1 font-semibold">
 								<Clock size={8} class="shrink-0" />
 								<span>ログイン</span>
@@ -322,7 +315,7 @@
 			</div>
 		{/if}
 
-		<div class="absolute bottom-2 right-2 text-[6px] font-light {copyrightClasses} pointer-events-none z-10" style="text-shadow: {copyrightShadow}">
+		<div class="absolute bottom-2 right-2 text-[6px] text-white pointer-events-none z-10" style="text-shadow: {copyrightOutline}">
 			© SQUARE ENIX
 		</div>
 	</div>

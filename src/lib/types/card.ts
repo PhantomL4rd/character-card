@@ -77,6 +77,7 @@ export const CONTENT_LABELS: Record<ContentType, string> = {
 	raid: 'レイド',
 	pvp: 'PvP',
 	housing: 'ハウジング',
+	chat: '雑談',
 	'gatherer-crafter': 'ギャザクラ',
 	glamour: 'ミラプリ',
 	fishing: '釣り',
@@ -85,14 +86,16 @@ export const CONTENT_LABELS: Record<ContentType, string> = {
 	'dd': 'DD',
 	'special-field': '特殊フィールド',
 	roleplay: 'ロールプレイ',
-	story: 'ストーリー',
+	achievement: 'アチーブ集め',
+	'treasure-map': '地図',
 	'gil-making': '金策'
 };
 
 export const ATTITUDE_LABELS: Record<AttitudeType, string> = {
 	hardcore: 'ガチ勢',
 	casual: 'まったり',
-	enjoy: 'エンジョイ'
+	enjoy: 'エンジョイ',
+	lonely: 'ぼっち',
 };
 
 export const DAY_LABELS: Record<DayType, string> = {
