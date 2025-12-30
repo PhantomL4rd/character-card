@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Move, Circle } from 'lucide-svelte';
 	import { cardStore } from '$lib/stores/cardStore.svelte';
 
 	const verticals = ['top', 'center', 'bottom'] as const;
@@ -18,7 +19,10 @@
 
 <div class="form-control">
 	<label class="label">
-		<span class="label-text font-semibold">テキスト位置</span>
+		<span class="label-text font-semibold flex items-center gap-1">
+			<Move class="w-4 h-4" />
+			テキスト位置
+		</span>
 	</label>
 	<div class="grid grid-cols-3 gap-1 w-32">
 		{#each verticals as v}
@@ -30,7 +34,7 @@
 					class:btn-ghost={!isSelected(v, h)}
 					onclick={() => setPosition(v, h)}
 				>
-					●
+					<Circle class="w-3 h-3" fill="currentColor" />
 				</button>
 			{/each}
 		{/each}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Globe } from 'lucide-svelte';
 	import { cardStore } from '$lib/stores/cardStore.svelte';
 	import worldsData from '$lib/data/worlds.json';
 
@@ -20,7 +21,10 @@
 
 <div class="form-control">
 	<label class="label">
-		<span class="label-text font-semibold">データセンター / World</span>
+		<span class="label-text font-semibold flex items-center gap-1">
+			<Globe class="w-4 h-4" />
+			データセンター / World
+		</span>
 	</label>
 	<div class="flex gap-2">
 		<select

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Image, Check } from 'lucide-svelte';
 	import { cardStore } from '$lib/stores/cardStore.svelte';
 
 	function handleFileSelect(event: Event) {
@@ -16,7 +17,10 @@
 
 <div class="form-control">
 	<label class="label">
-		<span class="label-text font-semibold">スクリーンショット</span>
+		<span class="label-text font-semibold flex items-center gap-1">
+			<Image class="w-4 h-4" />
+			スクリーンショット
+		</span>
 	</label>
 	<input
 		type="file"
@@ -25,6 +29,9 @@
 		class="file-input file-input-bordered w-full"
 	/>
 	{#if cardStore.data.image.src}
-		<p class="text-sm text-success mt-1">✓ 画像を読み込みました</p>
+		<p class="text-sm text-success mt-1 flex items-center gap-1">
+			<Check class="w-4 h-4" />
+			画像を読み込みました
+		</p>
 	{/if}
 </div>

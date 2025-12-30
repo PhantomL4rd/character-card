@@ -12,7 +12,7 @@ function generateFileName(): string {
 		.slice(0, 19)
 		.replace(/[-:]/g, '')
 		.replace('T', '-');
-	return `ff14-card-${timestamp}.png`;
+	return `characa-${timestamp}.png`;
 }
 
 export async function exportCardAsImage(options: ExportOptions = {}): Promise<void> {

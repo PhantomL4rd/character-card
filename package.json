@@ -1,5 +1,5 @@
 {
-  "name": "ff14-character-card",
+  "name": "characa-wizard",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "html-to-image": "^1.11.0",
+    "lucide-svelte": "^0.562.0",
     "svelte-easy-crop": "^5.0.0"
   },
   "type": "module"

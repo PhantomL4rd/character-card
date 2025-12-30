@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Calendar, Clock } from 'lucide-svelte';
 	import { cardStore } from '$lib/stores/cardStore.svelte';
 	import { DAY_LABELS, TIME_LABELS, type DayType, type TimeType } from '$lib/types/card';
 
@@ -9,7 +10,10 @@
 <div class="space-y-4">
 	<div class="form-control">
 		<label class="label">
-			<span class="label-text font-semibold">ログイン曜日</span>
+			<span class="label-text font-semibold flex items-center gap-1">
+				<Calendar class="w-4 h-4" />
+				ログイン曜日
+			</span>
 		</label>
 		<div class="flex flex-wrap gap-2">
 			{#each dayTypes as [type, label]}
@@ -28,7 +32,10 @@
 
 	<div class="form-control">
 		<label class="label">
-			<span class="label-text font-semibold">ログイン時間帯</span>
+			<span class="label-textが font-semibold flex items-center gap-1">
+				<Clock class="w-4 h-4" />
+				ログイン時間帯
+			</span>
 		</label>
 		<div class="flex flex-wrap gap-2">
 			{#each timeTypes as [type, label]}

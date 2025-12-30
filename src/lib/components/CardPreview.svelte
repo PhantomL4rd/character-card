@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
+	import { RotateCw, Undo, Gamepad2, Clock } from 'lucide-svelte';
 	import { cardStore } from '$lib/stores/cardStore.svelte';
 	import { CONTENT_LABELS, ATTITUDE_LABELS, DAY_LABELS, TIME_LABELS } from '$lib/types/card';
 	import jobsData from '$lib/data/jobs.json';
@@ -21,11 +22,17 @@
 	let cropSize = $state<{ width: number; height: number } | undefined>(undefined);
 
 	const themeClasses = $derived(
-		cardStore.data.design.theme === 'dark' ? 'bg-black/70 text-white' : 'bg-white/70 text-black'
+		cardStore.data.design.theme === 'dark' ? 'bg-black/60 text-white' : 'bg-white/60 text-black'
 	);
 
 	const copyrightClasses = $derived(
-		cardStore.data.design.theme === 'dark' ? 'text-white/60' : 'text-black/60'
+		cardStore.data.design.theme === 'dark' ? 'text-white/80' : 'text-black/80'
+	);
+
+	const copyrightShadow = $derived(
+		cardStore.data.design.theme === 'dark'
+			? '0 0 3px rgba(0,0,0,0.8), 0 0 6px rgba(0,0,0,0.6)'
+			: '0 0 3px rgba(255,255,255,0.8), 0 0 6px rgba(255,255,255,0.6)'
 	);
 
 	const positionClasses = $derived(() => {
@@ -42,7 +49,7 @@
 	);
 
 	const contentLabels = $derived(
-		cardStore.data.playStyle.contents.map((c) => CONTENT_LABELS[c]).join(' / ')
+		cardStore.data.playStyle.contents.map((c) => CONTENT_LABELS[c])
 	);
 
 	const attitudeLabel = $derived(
@@ -255,11 +262,17 @@
 		<!-- テキストオーバーレイ -->
 		{#if cardStore.data.characterName}
 			<div class="absolute inset-0 flex p-4 {positionClasses()} pointer-events-none z-10">
-				<div class="{themeClasses} p-2 rounded-lg backdrop-blur-sm max-w-[85%]">
-					<h2 class="text-sm font-bold">{cardStore.data.characterName}</h2>
+				<div class="{themeClasses} p-2 rounded-lg backdrop-blur-sm max-w-[75%]">
+					<h2 class="text-md font-bold">{cardStore.data.characterName}</h2>
 
-					{#if cardStore.data.world && cardStore.data.dataCenter}
-						<p class="text-[8px] opacity-80">{cardStore.data.world} @ {cardStore.data.dataCenter}</p>
+					{#if cardStore.data.dataCenter}
+						<p class="text-[10px]">
+							{#if cardStore.data.world}
+								{cardStore.data.world} @ {cardStore.data.dataCenter}
+							{:else}
+								{cardStore.data.dataCenter}
+							{/if}
+						</p>
 					{/if}
 
 					{#if selectedJobs.length > 0}
@@ -268,7 +281,7 @@
 								<img
 									src="/icons/jobs/{job.nameEn}.png"
 									alt={job.name}
-									class="w-2 h-2"
+									class="w-3 h-3"
 									title={job.name}
 								/>
 							{/each}
@@ -276,28 +289,40 @@
 					{/if}
 
 					{#if hasPlayStyle}
-						<div class="text-[8px] mt-1 opacity-90">
-							{#if attitudeLabel}
-								<span class="mr-2 font-medium">{attitudeLabel}</span>
-							{/if}
-							{#if contentLabels}
-								<span>{contentLabels}</span>
-							{/if}
+						<div class="text-[10px]">
+							<div class="flex items-center gap-1 font-semibold">
+								<Gamepad2 size={8} class="shrink-0" />
+								<span>プレイスタイル</span>
+							</div>
+							<div class="mt-0.5 ml-1 flex flex-wrap gap-x-1">
+								{#if attitudeLabel}
+									<span class="font-medium whitespace-nowrap">{attitudeLabel}</span>
+								{/if}
+								{#each contentLabels as label, i}
+									<span class="whitespace-nowrap">{i > 0 || attitudeLabel ? '/ ' : ''}{label}</span>
+								{/each}
+							</div>
 						</div>
 					{/if}
 
 					{#if hasLoginTime}
-						<div class="text-[8px] mt-0.5 opacity-80">
-							{dayLabels}
-							{#if dayLabels && timeLabels}・{/if}
-							{timeLabels}
+						<div class="text-[10px]">
+							<div class="flex items-center gap-1 font-semibold">
+								<Clock size={8} class="shrink-0" />
+								<span>ログイン</span>
+							</div>
+							<div class="mt-0.5 ml-1">
+								{dayLabels}
+								{#if dayLabels && timeLabels}・{/if}
+								{timeLabels}
+							</div>
 						</div>
 					{/if}
 				</div>
 			</div>
 		{/if}
 
-		<div class="absolute bottom-2 right-2 text-[6px] {copyrightClasses} pointer-events-none z-10">
+		<div class="absolute bottom-2 right-2 text-[6px] font-light {copyrightClasses} pointer-events-none z-10" style="text-shadow: {copyrightShadow}">
 			© SQUARE ENIX
 		</div>
 	</div>
@@ -328,11 +353,13 @@
 		{#if cardStore.data.image.src}
 			<!-- 画像操作 -->
 			<div class="flex items-center gap-2">
-				<button type="button" class="btn btn-sm btn-outline flex-1" onclick={rotateImage}>
-					🔄 画像回転
+				<button type="button" class="btn btn-sm btn-outline flex-1 gap-1" onclick={rotateImage}>
+					<RotateCw class="w-4 h-4" />
+					画像回転
 				</button>
-				<button type="button" class="btn btn-sm btn-ghost flex-1" onclick={resetPosition}>
-					↩️ リセット
+				<button type="button" class="btn btn-sm btn-ghost flex-1 gap-1" onclick={resetPosition}>
+					<Undo class="w-4 h-4" />
+					リセット
 				</button>
 			</div>
 			<div class="flex items-center gap-2">

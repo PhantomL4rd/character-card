@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Swords } from 'lucide-svelte';
 	import { cardStore } from '$lib/stores/cardStore.svelte';
 	import jobsData from '$lib/data/jobs.json';
 
@@ -12,7 +13,10 @@
 
 <div class="form-control">
 	<label class="label">
-		<span class="label-text font-semibold">ジョブ</span>
+		<span class="label-text font-semibold flex items-center gap-1">
+			<Swords class="w-4 h-4" />
+			ジョブ
+		</span>
 	</label>
 	<div class="space-y-3">
 		{#each jobsByRole as role}

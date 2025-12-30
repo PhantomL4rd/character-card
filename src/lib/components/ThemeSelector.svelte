@@ -1,10 +1,14 @@
 <script lang="ts">
+	import { SunMoon } from 'lucide-svelte';
 	import { cardStore } from '$lib/stores/cardStore.svelte';
 </script>
 
 <div class="form-control">
 	<label class="label">
-		<span class="label-text font-semibold">テーマ</span>
+		<span class="label-text font-semibold flex items-center gap-1">
+			<SunMoon class="w-4 h-4" />
+			テーマ
+		</span>
 	</label>
 	<div class="flex gap-4">
 		<label class="label cursor-pointer gap-2">

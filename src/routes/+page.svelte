@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { tick } from 'svelte';
+	import { IdCard } from 'lucide-svelte';
 	import { cardStore } from '$lib/stores/cardStore.svelte';
 	import { exportCardAsImage } from '$lib/utils/imageExport';
 	import CardPreview from '$lib/components/CardPreview.svelte';
@@ -32,10 +33,16 @@
 </script>
 
 <svelte:head>
-	<title>FF14 Character Card Generator</title>
+	<title>キャラカウィザード</title>
 </svelte:head>
 
 <div class="flex flex-col min-h-screen pb-16">
+	<!-- Header -->
+	<header class="navbar bg-primary text-primary-content">
+		<IdCard class="w-6 h-6 ml-4" />
+		<h1 class="text-xl font-bold px-2">キャラカウィザード</h1>
+	</header>
+
 	<!-- Form: スクロール可能 -->
 	<div class="flex-1">
 		<WizardForm

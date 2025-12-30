@@ -80,19 +80,19 @@ export const CONTENT_LABELS: Record<ContentType, string> = {
 	'gatherer-crafter': 'ギャザクラ',
 	glamour: 'ミラプリ',
 	fishing: '釣り',
+	'mob-hunt': 'モブハン',
 	'gold-saucer': 'ゴールドソーサー',
+	'dd': 'DD',
 	'special-field': '特殊フィールド',
 	roleplay: 'ロールプレイ',
 	story: 'ストーリー',
-	'gil-making': '金策',
-	other: 'その他'
+	'gil-making': '金策'
 };
 
 export const ATTITUDE_LABELS: Record<AttitudeType, string> = {
 	hardcore: 'ガチ勢',
 	casual: 'まったり',
-	enjoy: 'エンジョイ',
-	other: 'その他'
+	enjoy: 'エンジョイ'
 };
 
 export const DAY_LABELS: Record<DayType, string> = {
