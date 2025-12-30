@@ -12,8 +12,12 @@
 	}
 	let { interactive = false, exportMode = false }: Props = $props();
 
-	let crop = $state({ x: 0, y: 0 });
-	let zoom = $state(1);
+	// ストアから初期値を取得（エクスポート時に保存済みの値を反映するため）
+	let crop = $state({ 
+		x: cardStore.data.image.offset?.x ?? 0, 
+		y: cardStore.data.image.offset?.y ?? 0 
+	});
+	let zoom = $state(cardStore.data.image.zoom ?? 1);
 	let minZoom = $state(1);
 	let rotatedImageSrc = $state<string | null>(null);
 	let imageSize = $state<{ width: number; height: number } | null>(null);
@@ -142,6 +146,22 @@
 		}
 	}
 
+	// ストアの値を復元（exportMode用）
+	function restoreFromStore() {
+		if (imageSize) {
+			const newMinZoom = Math.max(1, calcMinZoom(imageSize.width, imageSize.height, aspect));
+			minZoom = newMinZoom;
+			// untrackでストア参照を依存関係から除外し、無限ループを防ぐ
+			untrack(() => {
+				zoom = Math.max(newMinZoom, cardStore.data.image.zoom ?? newMinZoom);
+				crop = { 
+					x: cardStore.data.image.offset?.x ?? 0, 
+					y: cardStore.data.image.offset?.y ?? 0 
+				};
+			});
+		}
+	}
+
 	async function rotateImage() {
 		if (!cardStore.data.image.src) return;
 
@@ -168,13 +188,23 @@
 				rotatedImageSrc = null;
 				getImageSize(cardStore.data.image.src).then(size => {
 					imageSize = size;
-					resetZoomToMin();
+					// exportModeではストアの値を復元、それ以外はリセット
+					if (exportMode) {
+						restoreFromStore();
+					} else {
+						resetZoomToMin();
+					}
 				});
 			} else {
 				rotateImageCanvas(cardStore.data.image.src, rotation).then(result => {
 					rotatedImageSrc = result.src;
 					imageSize = { width: result.width, height: result.height };
-					resetZoomToMin();
+					// exportModeではストアの値を復元、それ以外はリセット
+					if (exportMode) {
+						restoreFromStore();
+					} else {
+						resetZoomToMin();
+					}
 				});
 			}
 		}
@@ -184,7 +214,12 @@
 	$effect(() => {
 		const _ = cardStore.data.design.orientation;
 		if (imageSize) {
-			resetZoomToMin();
+			// exportModeではストアの値を復元、それ以外はリセット
+			if (exportMode) {
+				restoreFromStore();
+			} else {
+				resetZoomToMin();
+			}
 		}
 	});
 

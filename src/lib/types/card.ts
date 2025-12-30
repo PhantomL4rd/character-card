@@ -88,7 +88,8 @@ export const CONTENT_LABELS: Record<ContentType, string> = {
 	roleplay: 'ロールプレイ',
 	achievement: 'アチーブ集め',
 	'treasure-map': '地図',
-	'gil-making': '金策'
+	'gil-making': '金策',
+	roulette: 'ルレ',
 };
 
 export const ATTITUDE_LABELS: Record<AttitudeType, string> = {

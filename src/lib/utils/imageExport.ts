@@ -1,8 +1,8 @@
-import { toPng } from 'html-to-image';
+import { domToPng } from 'modern-screenshot';
 
 export interface ExportOptions {
 	quality?: number;
-	pixelRatio?: number;
+	scale?: number;
 }
 
 function generateFileName(): string {
@@ -21,12 +21,11 @@ export async function exportCardAsImage(options: ExportOptions = {}): Promise<vo
 		throw new Error('Card element not found');
 	}
 
-	const { quality = 1.0, pixelRatio = 4 } = options;
+	const { scale = 4 } = options;
 
-	const dataUrl = await toPng(cardElement, {
-		quality,
-		pixelRatio,
-		cacheBust: true
+	const dataUrl = await domToPng(cardElement, {
+		scale,
+		quality: 1.0
 	});
 
 	const link = document.createElement('a');
