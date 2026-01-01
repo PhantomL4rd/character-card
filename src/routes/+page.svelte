@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { tick } from 'svelte';
 	import { IdCard } from 'lucide-svelte';
 	import { cardStore } from '$lib/stores/cardStore.svelte';
 	import { exportCardAsImage } from '$lib/utils/imageExport';
-	import CardPreview from '$lib/components/CardPreview.svelte';
 	import WizardForm from '$lib/components/WizardForm.svelte';
 	import TabNavigation from '$lib/components/TabNavigation.svelte';
 
@@ -22,8 +20,7 @@
 		exportError = null;
 
 		try {
-			await tick(); // DOMの更新を待つ
-			await exportCardAsImage();
+			await exportCardAsImage({ cardData: cardStore.data });
 		} catch (e) {
 			exportError = e instanceof Error ? e.message : '画像の生成に失敗しました';
 		} finally {
@@ -55,11 +52,4 @@
 
 	<!-- Tabs: 画面下部に固定 -->
 	<TabNavigation {currentStep} onStepChange={handleStepChange} />
-</div>
-
-<!-- エクスポート用の非表示CardPreview（フルサイズ） -->
-<div class="fixed -left-[9999px] top-0">
-	<div class="w-[640px]">
-		<CardPreview interactive={false} exportMode={true} />
-	</div>
 </div>

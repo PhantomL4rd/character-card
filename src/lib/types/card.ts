@@ -1,3 +1,10 @@
+export interface CroppedArea {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+}
+
 export interface CardData {
 	// 基本情報
 	characterName: string;
@@ -21,8 +28,7 @@ export interface CardData {
 	image: {
 		src: string | null;
 		rotation: 0 | 90 | 180 | 270;
-		offset: { x: number; y: number } | null;
-		zoom: number;
+		croppedArea: CroppedArea | null;
 	};
 
 	// デザイン設定
@@ -40,17 +46,21 @@ export type ContentType =
 	| 'raid'
 	| 'pvp'
 	| 'housing'
+	| 'chat'
 	| 'gatherer-crafter'
 	| 'glamour'
 	| 'fishing'
+	| 'mob-hunt'
 	| 'gold-saucer'
+	| 'dd'
 	| 'special-field'
 	| 'roleplay'
-	| 'story'
+	| 'achievement'
+	| 'treasure-map'
 	| 'gil-making'
-	| 'other';
+	| 'roulette';
 
-export type AttitudeType = 'hardcore' | 'casual' | 'enjoy' | 'other';
+export type AttitudeType = 'hardcore' | 'casual' | 'enjoy' | 'lonely';
 export type DayType = 'weekday' | 'weekend' | 'everyday' | 'irregular';
 export type TimeType = 'morning' | 'afternoon' | 'night' | 'midnight';
 

@@ -1,4 +1,4 @@
-import type { CardData } from '$lib/types/card';
+import type { CardData, CroppedArea } from '$lib/types/card';
 
 const initialCardData: CardData = {
 	characterName: '',
@@ -16,8 +16,7 @@ const initialCardData: CardData = {
 	image: {
 		src: null,
 		rotation: 0,
-		offset: null,
-		zoom: 1
+		croppedArea: null
 	},
 	design: {
 		theme: 'dark',
@@ -62,17 +61,14 @@ function createCardStore() {
 		updateImage(src: string) {
 			cardData.image.src = src;
 			cardData.image.rotation = 0;
-			cardData.image.offset = { x: 0, y: 0 };
-			cardData.image.zoom = 1;
+			cardData.image.croppedArea = null;
 		},
 		updateRotation(rotation: 0 | 90 | 180 | 270) {
 			cardData.image.rotation = rotation;
-			cardData.image.offset = { x: 0, y: 0 };
-			cardData.image.zoom = 1;
+			cardData.image.croppedArea = null;
 		},
-		updateImageOffset(x: number, y: number, zoom: number) {
-			cardData.image.offset = { x, y };
-			cardData.image.zoom = zoom;
+		updateCroppedArea(area: CroppedArea) {
+			cardData.image.croppedArea = area;
 		},
 		toggleContent(content: CardData['playStyle']['contents'][number]) {
 			const idx = cardData.playStyle.contents.indexOf(content);

@@ -21,7 +21,7 @@
 <div class="p-4 space-y-4">
 	<!-- プレビュー -->
 	<div class={isPortrait ? 'max-w-md mx-auto' : 'max-w-2xl mx-auto'}>
-		<CardPreview interactive={true} exportMode={false} />
+		<CardPreview interactive={true} />
 	</div>
 
 	<!-- ステップコンテンツ -->

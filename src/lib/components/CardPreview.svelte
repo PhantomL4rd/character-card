@@ -1,23 +1,18 @@
 <script lang="ts">
-	import { untrack } from 'svelte';
 	import { RotateCw, Undo, Gamepad2, Clock } from 'lucide-svelte';
 	import { cardStore } from '$lib/stores/cardStore.svelte';
 	import { CONTENT_LABELS, ATTITUDE_LABELS, DAY_LABELS, TIME_LABELS } from '$lib/types/card';
+	import type { CroppedArea } from '$lib/types/card';
 	import jobsData from '$lib/data/jobs.json';
 	import Cropper from 'svelte-easy-crop';
 
 	interface Props {
 		interactive?: boolean;
-		exportMode?: boolean;
 	}
-	let { interactive = false, exportMode = false }: Props = $props();
+	let { interactive = false }: Props = $props();
 
-	// ストアから初期値を取得（エクスポート時に保存済みの値を反映するため）
-	let crop = $state({ 
-		x: cardStore.data.image.offset?.x ?? 0, 
-		y: cardStore.data.image.offset?.y ?? 0 
-	});
-	let zoom = $state(cardStore.data.image.zoom ?? 1);
+	let crop = $state({ x: 0, y: 0 });
+	let zoom = $state(1);
 	let minZoom = $state(1);
 	let rotatedImageSrc = $state<string | null>(null);
 	let imageSize = $state<{ width: number; height: number } | null>(null);
@@ -74,22 +69,16 @@
 	// Cropperに渡す画像（回転済み）- nullの場合はundefinedに変換
 	const displayImage = $derived(rotatedImageSrc ?? cardStore.data.image.src ?? undefined);
 
-	function handleCropComplete() {
+	function handleCropComplete(event: { pixels: CroppedArea; percent: CroppedArea }) {
 		if (isResetting) return;
-		cardStore.updateImageOffset(crop.x, crop.y, zoom);
+		// ピクセル単位のクロップ領域をストアに保存
+		cardStore.updateCroppedArea(event.pixels);
 	}
 
-	// 空白ができない最小ズームを計算
-	function calcMinZoom(imgWidth: number, imgHeight: number, cropAspect: number): number {
-		const imageAspect = imgWidth / imgHeight;
-		// 画像がクロップ領域を完全にカバーするための最小ズーム
-		if (imageAspect > cropAspect) {
-			// 画像が横長 → 高さが足りないので、高さを合わせるためにズームが必要
-			return imageAspect / cropAspect;
-		} else {
-			// 画像が縦長 → 幅が足りないので、幅を合わせるためにズームが必要
-			return cropAspect / imageAspect;
-		}
+	// svelte-easy-cropではzoom=1で画像がクロップ領域に収まる（空白なし）
+	// minZoomは1で固定
+	function calcMinZoom(_imgWidth: number, _imgHeight: number, _cropAspect: number): number {
+		return 1;
 	}
 
 	// 画像サイズを取得
@@ -135,29 +124,9 @@
 			minZoom = newMinZoom;
 			zoom = newMinZoom;
 			crop = { x: 0, y: 0 };
-			// untrackでストア更新を依存関係から除外し、無限ループを防ぐ
-			untrack(() => {
-				cardStore.updateImageOffset(0, 0, newMinZoom);
-			});
 			// 次のマイクロタスクでフラグを解除
 			queueMicrotask(() => {
 				isResetting = false;
-			});
-		}
-	}
-
-	// ストアの値を復元（exportMode用）
-	function restoreFromStore() {
-		if (imageSize) {
-			const newMinZoom = Math.max(1, calcMinZoom(imageSize.width, imageSize.height, aspect));
-			minZoom = newMinZoom;
-			// untrackでストア参照を依存関係から除外し、無限ループを防ぐ
-			untrack(() => {
-				zoom = Math.max(newMinZoom, cardStore.data.image.zoom ?? newMinZoom);
-				crop = { 
-					x: cardStore.data.image.offset?.x ?? 0, 
-					y: cardStore.data.image.offset?.y ?? 0 
-				};
 			});
 		}
 	}
@@ -188,23 +157,13 @@
 				rotatedImageSrc = null;
 				getImageSize(cardStore.data.image.src).then(size => {
 					imageSize = size;
-					// exportModeではストアの値を復元、それ以外はリセット
-					if (exportMode) {
-						restoreFromStore();
-					} else {
-						resetZoomToMin();
-					}
+					resetZoomToMin();
 				});
 			} else {
 				rotateImageCanvas(cardStore.data.image.src, rotation).then(result => {
 					rotatedImageSrc = result.src;
 					imageSize = { width: result.width, height: result.height };
-					// exportModeではストアの値を復元、それ以外はリセット
-					if (exportMode) {
-						restoreFromStore();
-					} else {
-						resetZoomToMin();
-					}
+					resetZoomToMin();
 				});
 			}
 		}
@@ -214,12 +173,7 @@
 	$effect(() => {
 		const _ = cardStore.data.design.orientation;
 		if (imageSize) {
-			// exportModeではストアの値を復元、それ以外はリセット
-			if (exportMode) {
-				restoreFromStore();
-			} else {
-				resetZoomToMin();
-			}
+			resetZoomToMin();
 		}
 	});
 
@@ -246,11 +200,23 @@
 	/* svelte-easy-cropの暗いオーバーレイと枠を非表示（グリッド線は表示） */
 	:global(.reactEasyCrop_Container) {
 		overflow: hidden !important;
+		background: transparent !important;
 	}
 	:global(.reactEasyCrop_CropArea) {
 		border: none !important;
 		box-shadow: 0 0 0 9999px transparent !important;
 		color: transparent !important;
+	}
+	/* 画像の外側の背景を透明に、境界線を消す */
+	:global(.reactEasyCrop_Image) {
+		background: transparent !important;
+		border: none !important;
+		outline: none !important;
+	}
+	/* Cropper内部の全要素の境界を消す */
+	:global(.reactEasyCrop_Container *) {
+		border: none !important;
+		outline: none !important;
 	}
 	/* グリッド線は表示する（補助線として活用） */
 	:global(.reactEasyCrop_CropAreaGrid::before),
@@ -261,12 +227,10 @@
 
 <div class="space-y-2">
 	<div
-		id={exportMode ? 'card-preview' : undefined}
-		class="relative overflow-hidden rounded-lg shadow-xl {aspectClass} bg-base-300"
+		class="relative overflow-hidden {aspectClass} rounded-lg shadow-xl bg-base-300"
 		bind:this={containerEl}
 	>
 		{#if cardStore.data.image.src}
-			<!-- Cropperを常に使用（エクスポート時はグリッド非表示） -->
 			<div class="absolute inset-0">
 				<Cropper
 					image={displayImage}
@@ -277,7 +241,7 @@
 					maxZoom={Math.max(10, minZoom + 5)}
 					{cropSize}
 					cropShape="rect"
-					showGrid={interactive && !exportMode}
+					showGrid={interactive}
 					oncropcomplete={handleCropComplete}
 				/>
 			</div>

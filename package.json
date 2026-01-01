@@ -26,7 +26,6 @@
     "@tailwindcss/vite": "^4.1.18",
     "daisyui": "^5.5.14",
     "lucide-svelte": "^0.562.0",
-    "modern-screenshot": "^4.6.7",
     "svelte-easy-crop": "^5.0.0",
     "tailwindcss": "^4.1.18"
   },
