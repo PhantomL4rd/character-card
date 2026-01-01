@@ -1,18 +1,7 @@
 import type { CardData } from '$lib/types/card';
 import { CONTENT_LABELS, ATTITUDE_LABELS, DAY_LABELS, TIME_LABELS } from '$lib/types/card';
 import jobsData from '$lib/data/jobs.json';
-
-// 出力解像度
-const OUTPUT_SIZES = {
-	landscape: { width: 2560, height: 1440 },
-	portrait: { width: 1080, height: 1440 }
-};
-
-// プレビューサイズ（Tailwindのmax-w-2xl, max-w-md）
-const PREVIEW_SIZES = {
-	landscape: 672, // max-w-2xl
-	portrait: 448   // max-w-md
-};
+import { OUTPUT_SIZES, getExportStyles } from './overlayStyle';
 
 interface RenderOptions {
 	cardData: CardData;
@@ -125,25 +114,12 @@ async function drawTextOverlay(
 ): Promise<void> {
 	if (!cardData.characterName) return;
 
-	const isPortrait = cardData.design.orientation === 'portrait';
-	const previewWidth = isPortrait ? PREVIEW_SIZES.portrait : PREVIEW_SIZES.landscape;
-	const scale = outputSize.width / previewWidth; // プレビューサイズに対するスケール
-	const padding = 16 * scale;
-	const boxPadding = 8 * scale;
-	const borderRadius = 8 * scale;
-	const maxWidth = outputSize.width * 0.75;
+	const styles = getExportStyles(cardData.design.orientation);
 
 	// テーマに応じた色設定
 	const isDark = cardData.design.theme === 'dark';
 	const bgColor = isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)';
 	const textColor = isDark ? '#ffffff' : '#000000';
-
-	// フォント設定
-	const titleFontSize = 20 * scale;
-	const smallFontSize = 10 * scale;
-	const tinyFontSize = 8 * scale;
-	const iconSize = 12 * scale;
-	const jobIconSize = 12 * scale;
 
 	// ジョブ情報
 	const selectedJobs = cardData.playStyle.jobs
@@ -214,7 +190,7 @@ async function drawTextOverlay(
 
 	// ボックスサイズを計算
 	let boxWidth = 0;
-	let boxHeight = boxPadding * 2;
+	let boxHeight = styles.boxPadding * 2;
 	const lineHeights: number[] = [];
 
 	for (const line of lines) {
@@ -223,28 +199,28 @@ async function drawTextOverlay(
 
 		switch (line.type) {
 			case 'title':
-				ctx.font = `bold ${titleFontSize}px sans-serif`;
+				ctx.font = `bold ${styles.titleFontSize}px sans-serif`;
 				lineWidth = ctx.measureText(line.text!).width;
-				lineHeight = titleFontSize * 1.3;
+				lineHeight = styles.titleFontSize * styles.lineSpacing;
 				break;
 			case 'subtitle':
-				ctx.font = `${smallFontSize}px sans-serif`;
+				ctx.font = `${styles.subtitleFontSize}px sans-serif`;
 				lineWidth = ctx.measureText(line.text!).width;
-				lineHeight = smallFontSize * 1.4;
+				lineHeight = styles.subtitleFontSize * styles.lineSpacing;
 				break;
 			case 'jobs':
-				lineWidth = line.jobs!.length * (jobIconSize + 2 * scale);
-				lineHeight = jobIconSize * 1.5;
+				lineWidth = line.jobs!.length * (styles.jobIconSize + styles.jobGap);
+				lineHeight = styles.jobIconSize * 1.5;
 				break;
 			case 'section':
-				ctx.font = `bold ${tinyFontSize}px sans-serif`;
-				lineWidth = ctx.measureText(line.text!).width + iconSize + 4 * scale;
-				lineHeight = tinyFontSize * 1.8;
+				ctx.font = `bold ${styles.sectionFontSize}px sans-serif`;
+				lineWidth = ctx.measureText(line.text!).width + styles.sectionIconSize + styles.jobGap;
+				lineHeight = styles.sectionFontSize * 1.8;
 				break;
 			case 'content':
-				ctx.font = `${tinyFontSize}px sans-serif`;
-				lineWidth = ctx.measureText(line.text!).width + 4 * scale; // インデント分
-				lineHeight = tinyFontSize * 1.4;
+				ctx.font = `${styles.contentFontSize}px sans-serif`;
+				lineWidth = ctx.measureText(line.text!).width + styles.contentIndent;
+				lineHeight = styles.contentFontSize * styles.lineSpacing;
 				break;
 			default:
 				lineWidth = 0;
@@ -256,7 +232,7 @@ async function drawTextOverlay(
 		boxHeight += lineHeight;
 	}
 
-	boxWidth = Math.min(boxWidth + boxPadding * 2, maxWidth);
+	boxWidth = Math.min(boxWidth + styles.boxPadding * 2, styles.maxWidth);
 
 	// テキスト位置を計算
 	const pos = cardData.design.textPosition;
@@ -264,37 +240,37 @@ async function drawTextOverlay(
 
 	switch (pos.horizontal) {
 		case 'left':
-			boxX = padding;
+			boxX = styles.padding;
 			break;
 		case 'center':
 			boxX = (outputSize.width - boxWidth) / 2;
 			break;
 		case 'right':
-			boxX = outputSize.width - boxWidth - padding;
+			boxX = outputSize.width - boxWidth - styles.padding;
 			break;
 	}
 
 	switch (pos.vertical) {
 		case 'top':
-			boxY = padding;
+			boxY = styles.padding;
 			break;
 		case 'center':
 			boxY = (outputSize.height - boxHeight) / 2;
 			break;
 		case 'bottom':
-			boxY = outputSize.height - boxHeight - padding;
+			boxY = outputSize.height - boxHeight - styles.padding;
 			break;
 	}
 
 	// 背景ボックスを描画（角丸 + ぼかし効果は再現できないのでソリッドに）
 	ctx.fillStyle = bgColor;
 	ctx.beginPath();
-	ctx.roundRect(boxX, boxY, boxWidth, boxHeight, borderRadius);
+	ctx.roundRect(boxX, boxY, boxWidth, boxHeight, styles.borderRadius);
 	ctx.fill();
 
 	// テキストを描画
 	ctx.fillStyle = textColor;
-	let currentY = boxY + boxPadding;
+	let currentY = boxY + styles.boxPadding;
 
 	for (let i = 0; i < lines.length; i++) {
 		const line = lines[i];
@@ -302,41 +278,41 @@ async function drawTextOverlay(
 
 		switch (line.type) {
 			case 'title':
-				ctx.font = `bold ${titleFontSize}px sans-serif`;
+				ctx.font = `bold ${styles.titleFontSize}px sans-serif`;
 				ctx.textBaseline = 'bottom';
-				ctx.fillText(line.text!, boxX + boxPadding, currentY);
+				ctx.fillText(line.text!, boxX + styles.boxPadding, currentY);
 				break;
 
 			case 'subtitle':
-				ctx.font = `${smallFontSize}px sans-serif`;
+				ctx.font = `${styles.subtitleFontSize}px sans-serif`;
 				ctx.textBaseline = 'bottom';
-				ctx.fillText(line.text!, boxX + boxPadding, currentY);
+				ctx.fillText(line.text!, boxX + styles.boxPadding, currentY);
 				break;
 
 			case 'jobs':
 				// ジョブアイコンを描画
-				let jobX = boxX + boxPadding;
-				const jobY = currentY - jobIconSize;
+				let jobX = boxX + styles.boxPadding;
+				const jobY = currentY - styles.jobIconSize;
 				for (const job of line.jobs!) {
 					const icon = jobIcons.get(job.nameEn);
 					if (icon) {
-						ctx.drawImage(icon, jobX, jobY, jobIconSize, jobIconSize);
+						ctx.drawImage(icon, jobX, jobY, styles.jobIconSize, styles.jobIconSize);
 					}
-					jobX += jobIconSize + 2 * scale;
+					jobX += styles.jobIconSize + styles.jobGap;
 				}
 				break;
 
 			case 'section':
-				ctx.font = `bold ${tinyFontSize}px sans-serif`;
+				ctx.font = `bold ${styles.sectionFontSize}px sans-serif`;
 				ctx.textBaseline = 'bottom';
 				// アイコン（ゲームパッド/時計）の代わりにテキストのみ
-				ctx.fillText(line.text!, boxX + boxPadding, currentY);
+				ctx.fillText(line.text!, boxX + styles.boxPadding, currentY);
 				break;
 
 			case 'content':
-				ctx.font = `${tinyFontSize}px sans-serif`;
+				ctx.font = `${styles.contentFontSize}px sans-serif`;
 				ctx.textBaseline = 'bottom';
-				ctx.fillText(line.text!, boxX + boxPadding + 4 * scale, currentY);
+				ctx.fillText(line.text!, boxX + styles.boxPadding + styles.contentIndent, currentY);
 				break;
 		}
 	}
@@ -352,21 +328,17 @@ function drawCopyright(
 	cardData: CardData,
 	outputSize: { width: number; height: number }
 ): void {
-	const isPortrait = cardData.design.orientation === 'portrait';
-	const previewWidth = isPortrait ? PREVIEW_SIZES.portrait : PREVIEW_SIZES.landscape;
-	const scale = outputSize.width / previewWidth;
-	const fontSize = 6 * scale;
-	const padding = 8 * scale;
+	const styles = getExportStyles(cardData.design.orientation);
 
 	ctx.save();
 
-	ctx.font = `${fontSize}px sans-serif`;
+	ctx.font = `${styles.copyrightFontSize}px sans-serif`;
 	ctx.textBaseline = 'bottom';
 	ctx.textAlign = 'right';
 
 	const text = '\u00A9 SQUARE ENIX';
-	const x = outputSize.width - padding;
-	const y = outputSize.height - padding;
+	const x = outputSize.width - styles.copyrightPadding;
+	const y = outputSize.height - styles.copyrightPadding;
 
 	// 黒い縁取り（8方向）
 	ctx.fillStyle = '#000000';

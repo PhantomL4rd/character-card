@@ -5,6 +5,7 @@
 	import type { CroppedArea } from '$lib/types/card';
 	import jobsData from '$lib/data/jobs.json';
 	import Cropper from 'svelte-easy-crop';
+	import { calculateOverlayStyles, type OverlayStyles } from '$lib/utils/overlayStyle';
 
 	interface Props {
 		interactive?: boolean;
@@ -19,9 +20,12 @@
 	let isResetting = $state(false);
 	let containerEl: HTMLDivElement | undefined = $state();
 	let cropSize = $state<{ width: number; height: number } | undefined>(undefined);
+	let overlayStyles = $state<OverlayStyles | null>(null);
 
-	const themeClasses = $derived(
-		cardStore.data.design.theme === 'dark' ? 'bg-black/60 text-white' : 'bg-white/60 text-black'
+	const themeColors = $derived(
+		cardStore.data.design.theme === 'dark'
+			? { bg: 'rgba(0, 0, 0, 0.6)', text: '#ffffff' }
+			: { bg: 'rgba(255, 255, 255, 0.6)', text: '#000000' }
 	);
 
 	// コピーライト：白文字＋黒縁取り（8方向text-shadow）
@@ -215,12 +219,21 @@
 				const { width, height } = entry.contentRect;
 				if (width > 0 && height > 0) {
 					cropSize = { width, height };
+					// オーバーレイスタイルを計算
+					overlayStyles = calculateOverlayStyles(width, cardStore.data.design.orientation);
 				}
 			}
 		});
 
 		observer.observe(containerEl);
 		return () => observer.disconnect();
+	});
+
+	// 向き変更時にオーバーレイスタイルを再計算
+	$effect(() => {
+		if (cropSize) {
+			overlayStyles = calculateOverlayStyles(cropSize.width, cardStore.data.design.orientation);
+		}
 	});
 </script>
 
@@ -280,13 +293,27 @@
 		{/if}
 
 		<!-- テキストオーバーレイ -->
-		{#if cardStore.data.characterName}
-			<div class="absolute inset-0 flex p-4 {positionClasses()} pointer-events-none z-10">
-				<div class="{themeClasses} p-2 rounded-lg backdrop-blur-sm max-w-[75%]">
-					<h2 class="text-xl font-bold">{cardStore.data.characterName}</h2>
+		{#if cardStore.data.characterName && overlayStyles}
+			<div
+				class="absolute inset-0 flex pointer-events-none z-10 {positionClasses()}"
+				style="padding: {overlayStyles.padding}px;"
+			>
+				<div
+					style="
+						background: {themeColors.bg};
+						color: {themeColors.text};
+						padding: {overlayStyles.boxPadding}px;
+						border-radius: {overlayStyles.borderRadius}px;
+						max-width: {overlayStyles.maxWidth}px;
+						backdrop-filter: blur(4px);
+					"
+				>
+					<h2 style="font-size: {overlayStyles.titleFontSize}px; font-weight: bold; line-height: {overlayStyles.lineSpacing};">
+						{cardStore.data.characterName}
+					</h2>
 
 					{#if cardStore.data.dataCenter}
-						<p class="text-xs">
+						<p style="font-size: {overlayStyles.subtitleFontSize}px; line-height: {overlayStyles.lineSpacing};">
 							{#if cardStore.data.world}
 								{cardStore.data.world} @ {cardStore.data.dataCenter}
 							{:else}
@@ -296,12 +323,12 @@
 					{/if}
 
 					{#if selectedJobs.length > 0}
-						<div class="flex flex-wrap gap-0.5 mt-1">
+						<div style="display: flex; flex-wrap: wrap; gap: {overlayStyles.jobGap}px; margin-top: {overlayStyles.jobGap}px;">
 							{#each selectedJobs as job}
 								<img
 									src="/icons/jobs/{job.nameEn}.png"
 									alt={job.name}
-									class="w-3 h-3"
+									style="width: {overlayStyles.jobIconSize}px; height: {overlayStyles.jobIconSize}px;"
 									title={job.name}
 								/>
 							{/each}
@@ -309,29 +336,29 @@
 					{/if}
 
 					{#if hasPlayStyle}
-						<div class="text-xs">
-							<div class="flex items-center gap-1 font-semibold">
-								<Gamepad2 size={8} class="shrink-0" />
+						<div style="font-size: {overlayStyles.sectionFontSize}px; margin-top: {overlayStyles.jobGap}px;">
+							<div style="display: flex; align-items: center; gap: {overlayStyles.jobGap / 2}px; font-weight: 600;">
+								<Gamepad2 size={overlayStyles.sectionIconSize} style="flex-shrink: 0;" />
 								<span>プレイスタイル</span>
 							</div>
-							<div class="mt-0.5 ml-1 flex flex-wrap gap-x-1">
+							<div style="margin-top: {overlayStyles.jobGap / 2}px; margin-left: {overlayStyles.contentIndent}px; display: flex; flex-wrap: wrap; gap: {overlayStyles.jobGap / 2}px;">
 								{#if attitudeLabel}
-									<span class="font-medium whitespace-nowrap">{attitudeLabel}</span>
+									<span style="font-weight: 500; white-space: nowrap;">{attitudeLabel}</span>
 								{/if}
 								{#each contentLabels as label, i}
-									<span class="whitespace-nowrap">{i > 0 || attitudeLabel ? '/ ' : ''}{label}</span>
+									<span style="white-space: nowrap;">{i > 0 || attitudeLabel ? '/ ' : ''}{label}</span>
 								{/each}
 							</div>
 						</div>
 					{/if}
 
 					{#if hasLoginTime}
-						<div class="text-xs">
-							<div class="flex items-center gap-1 font-semibold">
-								<Clock size={8} class="shrink-0" />
+						<div style="font-size: {overlayStyles.sectionFontSize}px; margin-top: {overlayStyles.jobGap}px;">
+							<div style="display: flex; align-items: center; gap: {overlayStyles.jobGap / 2}px; font-weight: 600;">
+								<Clock size={overlayStyles.sectionIconSize} style="flex-shrink: 0;" />
 								<span>ログイン</span>
 							</div>
-							<div class="mt-0.5 ml-1">
+							<div style="margin-top: {overlayStyles.jobGap / 2}px; margin-left: {overlayStyles.contentIndent}px;">
 								{dayLabels}
 								{#if dayLabels && timeLabels}・{/if}
 								{timeLabels}
@@ -342,9 +369,19 @@
 			</div>
 		{/if}
 
-		<div class="absolute bottom-2 right-2 text-[6px] text-white pointer-events-none z-10" style="text-shadow: {copyrightOutline}">
-			© SQUARE ENIX
-		</div>
+		{#if overlayStyles}
+			<div
+				class="absolute text-white pointer-events-none z-10"
+				style="
+					bottom: {overlayStyles.copyrightPadding}px;
+					right: {overlayStyles.copyrightPadding}px;
+					font-size: {overlayStyles.copyrightFontSize}px;
+					text-shadow: {copyrightOutline};
+				"
+			>
+				© SQUARE ENIX
+			</div>
+		{/if}
 	</div>
 
 	{#if interactive}

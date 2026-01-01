@@ -1,4 +1,41 @@
+import { browser } from '$app/environment';
 import type { CardData, CroppedArea } from '$lib/types/card';
+
+const STORAGE_KEY = 'character-card-data';
+
+// 画像以外のデータを保存する型
+type SavedCardData = Omit<CardData, 'image'>;
+
+function loadFromStorage(): Partial<SavedCardData> | null {
+	if (!browser) return null;
+	try {
+		const saved = localStorage.getItem(STORAGE_KEY);
+		if (saved) {
+			return JSON.parse(saved) as Partial<SavedCardData>;
+		}
+	} catch (e) {
+		console.warn('Failed to load from localStorage:', e);
+	}
+	return null;
+}
+
+function saveToStorage(data: CardData): void {
+	if (!browser) return;
+	try {
+		// 画像以外のデータを保存
+		const toSave: SavedCardData = {
+			characterName: data.characterName,
+			dataCenter: data.dataCenter,
+			world: data.world,
+			playStyle: data.playStyle,
+			loginTime: data.loginTime,
+			design: data.design
+		};
+		localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+	} catch (e) {
+		console.warn('Failed to save to localStorage:', e);
+	}
+}
 
 const initialCardData: CardData = {
 	characterName: '',
@@ -29,7 +66,32 @@ const initialCardData: CardData = {
 };
 
 function createCardStore() {
-	let cardData = $state<CardData>(structuredClone(initialCardData));
+	// LocalStorageから復元したデータをマージ
+	const saved = loadFromStorage();
+	const initialData: CardData = saved
+		? {
+				...structuredClone(initialCardData),
+				...saved,
+				// playStyle, loginTime, designはネストしているのでdeep merge
+				playStyle: { ...initialCardData.playStyle, ...saved.playStyle },
+				loginTime: { ...initialCardData.loginTime, ...saved.loginTime },
+				design: {
+					...initialCardData.design,
+					...saved.design,
+					textPosition: {
+						...initialCardData.design.textPosition,
+						...saved.design?.textPosition
+					}
+				}
+			}
+		: structuredClone(initialCardData);
+
+	let cardData = $state<CardData>(initialData);
+
+	// 変更時に自動保存
+	function save() {
+		saveToStorage(cardData);
+	}
 
 	return {
 		get data() {
@@ -50,13 +112,16 @@ function createCardStore() {
 		},
 		updateCharacterName(name: string) {
 			cardData.characterName = name;
+			save();
 		},
 		updateDataCenter(dc: string) {
 			cardData.dataCenter = dc;
 			cardData.world = '';
+			save();
 		},
 		updateWorld(world: string) {
 			cardData.world = world;
+			save();
 		},
 		updateImage(src: string) {
 			cardData.image.src = src;
@@ -77,9 +142,11 @@ function createCardStore() {
 			} else {
 				cardData.playStyle.contents.splice(idx, 1);
 			}
+			save();
 		},
 		updateAttitude(attitude: CardData['playStyle']['attitude']) {
 			cardData.playStyle.attitude = attitude;
+			save();
 		},
 		toggleJob(jobId: string) {
 			const idx = cardData.playStyle.jobs.indexOf(jobId);
@@ -88,6 +155,7 @@ function createCardStore() {
 			} else {
 				cardData.playStyle.jobs.splice(idx, 1);
 			}
+			save();
 		},
 		toggleDay(day: CardData['loginTime']['days'][number]) {
 			const idx = cardData.loginTime.days.indexOf(day);
@@ -96,6 +164,7 @@ function createCardStore() {
 			} else {
 				cardData.loginTime.days.splice(idx, 1);
 			}
+			save();
 		},
 		toggleTime(time: CardData['loginTime']['times'][number]) {
 			const idx = cardData.loginTime.times.indexOf(time);
@@ -104,12 +173,15 @@ function createCardStore() {
 			} else {
 				cardData.loginTime.times.splice(idx, 1);
 			}
+			save();
 		},
 		updateTheme(theme: 'dark' | 'light') {
 			cardData.design.theme = theme;
+			save();
 		},
 		updateOrientation(orientation: 'landscape' | 'portrait') {
 			cardData.design.orientation = orientation;
+			save();
 		},
 		updateTextPosition(
 			vertical: 'top' | 'center' | 'bottom',
@@ -117,9 +189,13 @@ function createCardStore() {
 		) {
 			cardData.design.textPosition.vertical = vertical;
 			cardData.design.textPosition.horizontal = horizontal;
+			save();
 		},
 		reset() {
 			cardData = structuredClone(initialCardData);
+			if (browser) {
+				localStorage.removeItem(STORAGE_KEY);
+			}
 		}
 	};
 }
