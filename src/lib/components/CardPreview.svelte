@@ -139,7 +139,7 @@
 				ctx.drawImage(img, -img.width / 2, -img.height / 2);
 
 				resolve({
-					src: canvas.toDataURL('image/jpeg', 0.9),
+					src: canvas.toDataURL('image/png'),
 					width: canvas.width,
 					height: canvas.height
 				});

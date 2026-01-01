@@ -38,7 +38,7 @@ async function rotateImageCanvas(
 			ctx.rotate((degrees * Math.PI) / 180);
 			ctx.drawImage(img, -img.width / 2, -img.height / 2);
 
-			resolve(canvas.toDataURL('image/jpeg', 0.9));
+			resolve(canvas.toDataURL('image/png'));
 		};
 		img.src = src;
 	});
