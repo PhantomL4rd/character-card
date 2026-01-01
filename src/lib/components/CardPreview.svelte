@@ -75,9 +75,37 @@
 		cardStore.updateCroppedArea(event.pixels);
 	}
 
-	// svelte-easy-cropではzoom=1で画像がクロップ領域に収まる（空白なし）
-	// minZoomは1で固定
-	function calcMinZoom(_imgWidth: number, _imgHeight: number, _cropAspect: number): number {
+	/**
+	 * 画像がクロップ領域を完全にカバーするために必要な最小ズームを計算
+	 *
+	 * svelte-easy-cropの仕様:
+	 * - zoom=1 で画像がクロップ領域に「フィット」（contain方式）
+	 * - 画像のアスペクト比がクロップ領域より横長の場合、高さが足りなくなる
+	 * - 画像のアスペクト比がクロップ領域より縦長の場合、幅が足りなくなる
+	 * - どちらの場合も、minZoom > 1 にして画像を拡大し、隙間をなくす
+	 *
+	 * @param imgWidth - 画像の幅（回転適用後）
+	 * @param imgHeight - 画像の高さ（回転適用後）
+	 * @param cropAspect - クロップ領域のアスペクト比（幅/高さ）
+	 * @returns 最小ズームレベル（1以上）
+	 */
+	function calcMinZoom(imgWidth: number, imgHeight: number, cropAspect: number): number {
+		// 無効な入力に対する防御的処理
+		if (imgWidth <= 0 || imgHeight <= 0 || cropAspect <= 0) {
+			return 1;
+		}
+
+		const imageAspect = imgWidth / imgHeight;
+
+		if (imageAspect > cropAspect) {
+			// 画像が横長：高さが不足するためズームが必要
+			return Math.max(1, imageAspect / cropAspect);
+		} else if (imageAspect < cropAspect) {
+			// 画像が縦長：幅が不足するためズームが必要
+			return Math.max(1, cropAspect / imageAspect);
+		}
+
+		// 同じアスペクト比の場合、zoom=1で十分
 		return 1;
 	}
 
