@@ -12,12 +12,12 @@ export const OUTPUT_SIZES = {
 // 基準となるフォントサイズ（出力解像度での値）
 const BASE_STYLES = {
 	titleFontSize: 80,      // キャラクター名
-	subtitleFontSize: 40,   // DC/World
-	sectionFontSize: 36,    // セクションヘッダー
-	contentFontSize: 32,    // コンテンツ
-	jobIconSize: 48,        // ジョブアイコン
+	subtitleFontSize: 60,   // DC/World
+	sectionFontSize: 40,    // セクションヘッダー
+	contentFontSize: 36,    // コンテンツ
+	jobIconSize: 72,        // ジョブアイコン
 	sectionIconSize: 32,    // セクションアイコン
-	padding: 64,            // 外側パディング
+	padding: 32,            // 外側パディング
 	boxPadding: 32,         // ボックス内パディング
 	borderRadius: 32,       // 角丸
 	maxWidthRatio: 0.75,    // 最大幅の割合
