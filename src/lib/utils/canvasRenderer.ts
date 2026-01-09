@@ -2,6 +2,7 @@ import type { CardData } from '$lib/types/card';
 import { CONTENT_LABELS, ATTITUDE_LABELS, DAY_LABELS, TIME_LABELS } from '$lib/types/card';
 import jobsData from '$lib/data/jobs.json';
 import { OUTPUT_SIZES, getExportStyles } from './overlayStyle';
+import { getFontFamily } from '$lib/data/fonts';
 
 interface RenderOptions {
 	cardData: CardData;
@@ -19,7 +20,10 @@ export async function renderCardToCanvas(options: RenderOptions): Promise<Blob> 
 	const canvas = document.createElement('canvas');
 	canvas.width = outputSize.width;
 	canvas.height = outputSize.height;
-	const ctx = canvas.getContext('2d')!;
+	const ctx = canvas.getContext('2d');
+	if (!ctx) {
+		throw new Error('Failed to get 2d context');
+	}
 
 	// 1. 背景画像を描画
 	await drawBackgroundImage(ctx, options, outputSize);
@@ -121,6 +125,9 @@ async function drawTextOverlay(
 	const bgColor = isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)';
 	const textColor = isDark ? '#ffffff' : '#000000';
 
+	// ユーザー選択フォント
+	const fontFamily = getFontFamily(cardData.design.fontFamily);
+
 	// ジョブ情報
 	const selectedJobs = cardData.playStyle.jobs
 		.map((id) => jobsData.jobs.find((j) => j.id === id))
@@ -199,27 +206,27 @@ async function drawTextOverlay(
 
 		switch (line.type) {
 			case 'title':
-				ctx.font = `bold ${styles.titleFontSize}px sans-serif`;
-				lineWidth = ctx.measureText(line.text!).width;
+				ctx.font = `bold ${styles.titleFontSize}px ${fontFamily}`;
+				lineWidth = ctx.measureText(line.text ?? '').width;
 				lineHeight = styles.titleFontSize * styles.lineSpacing;
 				break;
 			case 'subtitle':
-				ctx.font = `${styles.subtitleFontSize}px sans-serif`;
-				lineWidth = ctx.measureText(line.text!).width;
+				ctx.font = `${styles.subtitleFontSize}px ${fontFamily}`;
+				lineWidth = ctx.measureText(line.text ?? '').width;
 				lineHeight = styles.subtitleFontSize * styles.lineSpacing;
 				break;
 			case 'jobs':
-				lineWidth = line.jobs!.length * (styles.jobIconSize + styles.jobGap);
+				lineWidth = (line.jobs ?? []).length * (styles.jobIconSize + styles.jobGap);
 				lineHeight = styles.jobIconSize * 1.5;
 				break;
 			case 'section':
-				ctx.font = `bold ${styles.sectionFontSize}px sans-serif`;
-				lineWidth = ctx.measureText(line.text!).width + styles.sectionIconSize + styles.jobGap;
+				ctx.font = `bold ${styles.sectionFontSize}px ${fontFamily}`;
+				lineWidth = ctx.measureText(line.text ?? '').width + styles.sectionIconSize + styles.jobGap;
 				lineHeight = styles.sectionFontSize * 1.8;
 				break;
 			case 'content':
-				ctx.font = `${styles.contentFontSize}px sans-serif`;
-				lineWidth = ctx.measureText(line.text!).width + styles.contentIndent;
+				ctx.font = `${styles.contentFontSize}px ${fontFamily}`;
+				lineWidth = ctx.measureText(line.text ?? '').width + styles.contentIndent;
 				lineHeight = styles.contentFontSize * styles.lineSpacing;
 				break;
 			default:
@@ -278,22 +285,22 @@ async function drawTextOverlay(
 
 		switch (line.type) {
 			case 'title':
-				ctx.font = `bold ${styles.titleFontSize}px sans-serif`;
+				ctx.font = `bold ${styles.titleFontSize}px ${fontFamily}`;
 				ctx.textBaseline = 'bottom';
-				ctx.fillText(line.text!, boxX + styles.boxPadding, currentY);
+				ctx.fillText(line.text ?? '', boxX + styles.boxPadding, currentY);
 				break;
 
 			case 'subtitle':
-				ctx.font = `${styles.subtitleFontSize}px sans-serif`;
+				ctx.font = `${styles.subtitleFontSize}px ${fontFamily}`;
 				ctx.textBaseline = 'bottom';
-				ctx.fillText(line.text!, boxX + styles.boxPadding, currentY);
+				ctx.fillText(line.text ?? '', boxX + styles.boxPadding, currentY);
 				break;
 
-			case 'jobs':
+			case 'jobs': {
 				// ジョブアイコンを描画
 				let jobX = boxX + styles.boxPadding;
 				const jobY = currentY - styles.jobIconSize;
-				for (const job of line.jobs!) {
+				for (const job of line.jobs ?? []) {
 					const icon = jobIcons.get(job.nameEn);
 					if (icon) {
 						ctx.drawImage(icon, jobX, jobY, styles.jobIconSize, styles.jobIconSize);
@@ -301,18 +308,19 @@ async function drawTextOverlay(
 					jobX += styles.jobIconSize + styles.jobGap;
 				}
 				break;
+			}
 
 			case 'section':
-				ctx.font = `bold ${styles.sectionFontSize}px sans-serif`;
+				ctx.font = `bold ${styles.sectionFontSize}px ${fontFamily}`;
 				ctx.textBaseline = 'bottom';
 				// アイコン（ゲームパッド/時計）の代わりにテキストのみ
-				ctx.fillText(line.text!, boxX + styles.boxPadding, currentY);
+				ctx.fillText(line.text ?? '', boxX + styles.boxPadding, currentY);
 				break;
 
 			case 'content':
-				ctx.font = `${styles.contentFontSize}px sans-serif`;
+				ctx.font = `${styles.contentFontSize}px ${fontFamily}`;
 				ctx.textBaseline = 'bottom';
-				ctx.fillText(line.text!, boxX + styles.boxPadding + styles.contentIndent, currentY);
+				ctx.fillText(line.text ?? '', boxX + styles.boxPadding + styles.contentIndent, currentY);
 				break;
 		}
 	}

@@ -1,3 +1,5 @@
+import type { FontFamily } from '$lib/data/fonts';
+
 export interface CroppedArea {
 	x: number;
 	y: number;
@@ -39,6 +41,7 @@ export interface CardData {
 			vertical: 'top' | 'center' | 'bottom';
 			horizontal: 'left' | 'center' | 'right';
 		};
+		fontFamily: FontFamily;
 	};
 }
 

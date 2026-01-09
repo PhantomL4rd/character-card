@@ -28,7 +28,8 @@ async function rotateImageCanvas(
 		const img = new Image();
 		img.onload = () => {
 			const canvas = document.createElement('canvas');
-			const ctx = canvas.getContext('2d')!;
+			const ctx = canvas.getContext('2d');
+			if (!ctx) return;
 
 			const isRotated90or270 = degrees === 90 || degrees === 270;
 			canvas.width = isRotated90or270 ? img.height : img.width;

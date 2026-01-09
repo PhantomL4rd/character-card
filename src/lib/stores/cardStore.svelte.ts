@@ -1,5 +1,6 @@
 import { browser } from '$app/environment';
 import type { CardData, CroppedArea } from '$lib/types/card';
+import { isValidFontFamily, type FontFamily } from '$lib/data/fonts';
 
 const STORAGE_KEY = 'character-card-data';
 
@@ -61,7 +62,8 @@ const initialCardData: CardData = {
 		textPosition: {
 			vertical: 'bottom',
 			horizontal: 'left'
-		}
+		},
+		fontFamily: 'system'
 	}
 };
 
@@ -81,7 +83,12 @@ function createCardStore() {
 					textPosition: {
 						...initialCardData.design.textPosition,
 						...saved.design?.textPosition
-					}
+					},
+					// 不正なfontFamily値はデフォルトに置換
+					fontFamily:
+						saved.design?.fontFamily && isValidFontFamily(saved.design.fontFamily)
+							? saved.design.fontFamily
+							: initialCardData.design.fontFamily
 				}
 			}
 		: structuredClone(initialCardData);
@@ -189,6 +196,10 @@ function createCardStore() {
 		) {
 			cardData.design.textPosition.vertical = vertical;
 			cardData.design.textPosition.horizontal = horizontal;
+			save();
+		},
+		updateFontFamily(fontFamily: FontFamily) {
+			cardData.design.fontFamily = fontFamily;
 			save();
 		},
 		reset() {

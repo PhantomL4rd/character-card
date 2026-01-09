@@ -2,6 +2,7 @@
 	import { cardStore } from '$lib/stores/cardStore.svelte';
 	import ThemeSelector from '../ThemeSelector.svelte';
 	import PositionSelector from '../PositionSelector.svelte';
+	import FontSelector from '../FontSelector.svelte';
 
 	interface Props {
 		isExporting: boolean;
@@ -13,9 +14,10 @@
 </script>
 
 <div class="space-y-6">
-	<div class="flex flex-wrap gap-6">
+	<div class="flex flex-col gap-4">
 		<ThemeSelector />
 		<PositionSelector />
+		<FontSelector />
 	</div>
 
 	{#if exportError}

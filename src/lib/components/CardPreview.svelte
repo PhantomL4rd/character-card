@@ -6,6 +6,7 @@
 	import jobsData from '$lib/data/jobs.json';
 	import Cropper from 'svelte-easy-crop';
 	import { calculateOverlayStyles, type OverlayStyles } from '$lib/utils/overlayStyle';
+	import { getFontFamily } from '$lib/data/fonts';
 
 	interface Props {
 		interactive?: boolean;
@@ -30,6 +31,9 @@
 
 	// コピーライト：白文字＋黒縁取り（8方向text-shadow）
 	const copyrightOutline = '-1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, -1px 0 0 #000, 1px 0 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 1px 1px 0 #000';
+
+	// ユーザー選択フォント
+	const fontFamily = $derived(getFontFamily(cardStore.data.design.fontFamily));
 
 	const positionClasses = $derived(() => {
 		const v = { top: 'items-start', center: 'items-center', bottom: 'items-end' };
@@ -128,7 +132,8 @@
 			const img = new Image();
 			img.onload = () => {
 				const canvas = document.createElement('canvas');
-				const ctx = canvas.getContext('2d')!;
+				const ctx = canvas.getContext('2d');
+				if (!ctx) return;
 
 				const isRotated90or270 = degrees === 90 || degrees === 270;
 				canvas.width = isRotated90or270 ? img.height : img.width;
@@ -306,6 +311,7 @@
 						border-radius: {overlayStyles.borderRadius}px;
 						max-width: {overlayStyles.maxWidth}px;
 						backdrop-filter: blur(4px);
+						font-family: {fontFamily};
 					"
 				>
 					<h2 style="font-size: {overlayStyles.titleFontSize}px; font-weight: bold; line-height: {overlayStyles.lineSpacing};">
