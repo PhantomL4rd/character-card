@@ -50,6 +50,11 @@
 		/>
 	</div>
 
+	<!-- Footer: Copyright -->
+	<footer class="text-center text-xs text-base-content/50 py-2">
+		© SQUARE ENIX
+	</footer>
+
 	<!-- Tabs: 画面下部に固定 -->
 	<TabNavigation {currentStep} onStepChange={handleStepChange} />
 </div>
