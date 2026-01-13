@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { Calendar, Clock } from 'lucide-svelte';
 	import { cardStore } from '$lib/stores/cardStore.svelte';
-	import { DAY_LABELS, TIME_LABELS, type DayType, type TimeType } from '$lib/types/card';
+	import type { DayType, TimeType } from '$lib/types/card';
+	import { DAY_LABELS, TIME_LABELS } from '$lib/data/labels';
 
 	const dayTypes = Object.entries(DAY_LABELS) as [DayType, string][];
 	const timeTypes = Object.entries(TIME_LABELS) as [TimeType, string][];

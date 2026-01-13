@@ -101,6 +101,9 @@ function createCardStore() {
 	}
 
 	return {
+		// ============================================================
+		// データアクセス
+		// ============================================================
 		get data() {
 			return cardData;
 		},
@@ -117,6 +120,10 @@ function createCardStore() {
 			}
 			return missing;
 		},
+
+		// ============================================================
+		// 基本情報（キャラクター名、DC、ワールド）
+		// ============================================================
 		updateCharacterName(name: string) {
 			cardData.characterName = name;
 			save();
@@ -130,6 +137,10 @@ function createCardStore() {
 			cardData.world = world;
 			save();
 		},
+
+		// ============================================================
+		// 画像操作（アップロード、回転、クロップ）
+		// ============================================================
 		updateImage(src: string) {
 			cardData.image.src = src;
 			cardData.image.rotation = 0;
@@ -142,6 +153,10 @@ function createCardStore() {
 		updateCroppedArea(area: CroppedArea) {
 			cardData.image.croppedArea = area;
 		},
+
+		// ============================================================
+		// プレイスタイル（コンテンツ、姿勢、ジョブ）
+		// ============================================================
 		toggleContent(content: CardData['playStyle']['contents'][number]) {
 			const idx = cardData.playStyle.contents.indexOf(content);
 			if (idx === -1) {
@@ -164,6 +179,10 @@ function createCardStore() {
 			}
 			save();
 		},
+
+		// ============================================================
+		// ログイン時間（曜日、時間帯）
+		// ============================================================
 		toggleDay(day: CardData['loginTime']['days'][number]) {
 			const idx = cardData.loginTime.days.indexOf(day);
 			if (idx === -1) {
@@ -182,6 +201,10 @@ function createCardStore() {
 			}
 			save();
 		},
+
+		// ============================================================
+		// デザイン設定（テーマ、向き、テキスト位置、フォント）
+		// ============================================================
 		updateTheme(theme: 'dark' | 'light') {
 			cardData.design.theme = theme;
 			save();
@@ -202,6 +225,10 @@ function createCardStore() {
 			cardData.design.fontFamily = fontFamily;
 			save();
 		},
+
+		// ============================================================
+		// リセット
+		// ============================================================
 		reset() {
 			cardData = structuredClone(initialCardData);
 			if (browser) {

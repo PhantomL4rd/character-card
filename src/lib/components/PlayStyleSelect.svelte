@@ -1,12 +1,8 @@
 <script lang="ts">
 	import { Gamepad2, Heart } from 'lucide-svelte';
 	import { cardStore } from '$lib/stores/cardStore.svelte';
-	import {
-		CONTENT_LABELS,
-		ATTITUDE_LABELS,
-		type ContentType,
-		type AttitudeType
-	} from '$lib/types/card';
+	import type { ContentType, AttitudeType } from '$lib/types/card';
+	import { CONTENT_LABELS, ATTITUDE_LABELS } from '$lib/data/labels';
 
 	const contentTypes = Object.entries(CONTENT_LABELS) as [ContentType, string][];
 	const attitudeTypes = Object.entries(ATTITUDE_LABELS) as [AttitudeType, string][];

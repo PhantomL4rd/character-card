@@ -1,8 +1,7 @@
 import type { CardData } from '$lib/types/card';
-import { CONTENT_LABELS, ATTITUDE_LABELS, DAY_LABELS, TIME_LABELS } from '$lib/types/card';
-import jobsData from '$lib/data/jobs.json';
 import { OUTPUT_SIZES, getExportStyles } from './overlayStyle';
 import { getFontFamily } from '$lib/data/fonts';
+import { buildOverlayContent } from './overlayContent';
 
 interface RenderOptions {
 	cardData: CardData;
@@ -128,72 +127,13 @@ async function drawTextOverlay(
 	// ユーザー選択フォント
 	const fontFamily = getFontFamily(cardData.design.fontFamily);
 
-	// ジョブ情報
-	const selectedJobs = cardData.playStyle.jobs
-		.map((id) => jobsData.jobs.find((j) => j.id === id))
-		.filter((j): j is (typeof jobsData.jobs)[number] => j !== undefined);
+	// 共通ユーティリティでコンテンツを構築
+	const { lines, selectedJobs } = buildOverlayContent(cardData);
 
 	// ジョブアイコンを事前に読み込み
 	const jobIcons = await loadJobIcons(selectedJobs);
 
-	// プレイスタイル・ログイン時間の有無
-	const hasPlayStyle =
-		cardData.playStyle.contents.length > 0 ||
-		cardData.playStyle.attitude ||
-		selectedJobs.length > 0;
-	const hasLoginTime =
-		cardData.loginTime.days.length > 0 || cardData.loginTime.times.length > 0;
-
 	ctx.save();
-
-	// テキスト内容を事前計算してボックスサイズを決定
-	type TextLine = {
-		type: 'title' | 'subtitle' | 'section' | 'content' | 'jobs';
-		text?: string;
-		jobs?: typeof selectedJobs;
-	};
-
-	const lines: TextLine[] = [];
-
-	// キャラクター名
-	lines.push({ type: 'title', text: cardData.characterName });
-
-	// データセンター・ワールド
-	if (cardData.dataCenter) {
-		const dcText = cardData.world
-			? `${cardData.world} @ ${cardData.dataCenter}`
-			: cardData.dataCenter;
-		lines.push({ type: 'subtitle', text: dcText });
-	}
-
-	// ジョブアイコン
-	if (selectedJobs.length > 0) {
-		lines.push({ type: 'jobs', jobs: selectedJobs });
-	}
-
-	// プレイスタイル
-	if (hasPlayStyle) {
-		lines.push({ type: 'section', text: 'プレイスタイル' });
-		const attitudeLabel = cardData.playStyle.attitude
-			? ATTITUDE_LABELS[cardData.playStyle.attitude]
-			: '';
-		const contentLabels = cardData.playStyle.contents.map((c) => CONTENT_LABELS[c]);
-		const styleText = [attitudeLabel, ...contentLabels].filter(Boolean).join(' / ');
-		if (styleText) {
-			lines.push({ type: 'content', text: styleText });
-		}
-	}
-
-	// ログイン時間
-	if (hasLoginTime) {
-		lines.push({ type: 'section', text: 'ログイン' });
-		const dayLabels = cardData.loginTime.days.map((d) => DAY_LABELS[d]).join('・');
-		const timeLabels = cardData.loginTime.times.map((t) => TIME_LABELS[t]).join('・');
-		const loginText = [dayLabels, timeLabels].filter(Boolean).join('・');
-		if (loginText) {
-			lines.push({ type: 'content', text: loginText });
-		}
-	}
 
 	// ボックスサイズを計算
 	let boxWidth = 0;
