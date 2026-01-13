@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CardPreview from './CardPreview.svelte';
+	import ProgressIndicator from './ProgressIndicator.svelte';
 	import StepBasicInfo from './steps/StepBasicInfo.svelte';
 	import StepPlayStyle from './steps/StepPlayStyle.svelte';
 	import StepLoginTime from './steps/StepLoginTime.svelte';
@@ -23,6 +24,9 @@
 	<div class={isPortrait ? 'max-w-md mx-auto' : 'max-w-2xl mx-auto'}>
 		<CardPreview interactive={true} />
 	</div>
+
+	<!-- 進捗表示 -->
+	<ProgressIndicator />
 
 	<!-- ステップコンテンツ -->
 	{#if currentStep === 0}

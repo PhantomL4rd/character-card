@@ -5,17 +5,19 @@
 	import { rotateImageCanvas } from '$lib/utils/imageTransform';
 	import ImageCropper from './ImageCropper.svelte';
 	import TextOverlay from './TextOverlay.svelte';
-	import ImageControls from './ImageControls.svelte';
+	import ImageControlsOverlay from './ImageControlsOverlay.svelte';
 
 	interface Props {
-		interactive?: boolean;
+		isMobile?: boolean;
 	}
-	let { interactive = false }: Props = $props();
+
+	let { isMobile = false }: Props = $props();
 
 	let rotatedImageSrc = $state<string | null>(null);
 	let containerEl: HTMLDivElement | undefined = $state();
 	let overlayStyles = $state<OverlayStyles | null>(null);
 	let cropperRef: ImageCropper | undefined = $state();
+	let showControls = $state(false);
 
 	// カードの向きはストアのorientation設定から決定
 	const isPortrait = $derived(cardStore.data.design.orientation === 'portrait');
@@ -29,28 +31,14 @@
 		cardStore.updateCroppedArea(area);
 	}
 
-	async function rotateImage() {
-		if (!cardStore.data.image.src) return;
-
-		const current = cardStore.data.image.rotation;
-		const next = ((current + 90) % 360) as 0 | 90 | 180 | 270;
-		cardStore.updateRotation(next);
-
-		// 元画像から回転画像を生成
-		const result = await rotateImageCanvas(cardStore.data.image.src, next);
-		rotatedImageSrc = result.src;
+	function handlePreviewClick() {
+		if (cardStore.data.image.src) {
+			showControls = !showControls;
+		}
 	}
 
-	function handleOrientationChange(orientation: 'landscape' | 'portrait') {
-		cardStore.updateOrientation(orientation);
-	}
-
-	function handleZoomChange(value: number) {
-		cropperRef?.setZoom(value);
-	}
-
-	function handleReset() {
-		cropperRef?.resetPosition();
+	function handleCloseControls() {
+		showControls = false;
 	}
 
 	// 画像変更時
@@ -85,36 +73,35 @@
 		return () => observer.disconnect();
 	});
 
-	// 向き変更時にオーバーレイスタイルを再計算（DOM更新を待つ）
+	// 向き変更時にオーバーレイスタイルを再計算
 	$effect(() => {
 		const orientation = cardStore.data.design.orientation;
 		if (containerEl) {
-			// DOM更新を待ってからサイズを取得
-			requestAnimationFrame(() => {
-				requestAnimationFrame(() => {
-					if (containerEl) {
-						const { width } = containerEl.getBoundingClientRect();
-						if (width > 0) {
-							overlayStyles = calculateOverlayStyles(width, orientation);
-						}
-					}
-				});
-			});
+			const { width } = containerEl.getBoundingClientRect();
+			if (width > 0) {
+				overlayStyles = calculateOverlayStyles(width, orientation);
+			}
 		}
 	});
 </script>
 
-<div class="space-y-2">
+<div class={isMobile ? 'sticky-preview' : 'layout-split-preview'}>
+	<!-- Preview Container -->
 	<div
-		class="relative overflow-hidden {aspectClass} rounded-lg shadow-xl bg-base-300"
+		class="relative overflow-hidden {aspectClass} rounded-lg shadow-xl bg-base-300 cursor-pointer {isPortrait ? 'max-w-[280px] mx-auto' : ''}"
 		bind:this={containerEl}
+		onclick={handlePreviewClick}
+		onkeydown={(e) => e.key === 'Enter' && handlePreviewClick()}
+		role="button"
+		tabindex="0"
+		aria-label="画像コントロールを開く"
 	>
 		{#if cardStore.data.image.src}
 			<ImageCropper
 				bind:this={cropperRef}
 				image={displayImage}
 				{aspect}
-				{interactive}
+				interactive={true}
 				onCropComplete={handleCropComplete}
 			/>
 		{:else}
@@ -127,19 +114,19 @@
 		{#if overlayStyles}
 			<TextOverlay cardData={cardStore.data} {overlayStyles} />
 		{/if}
+
+		<!-- 画像コントロールオーバーレイ -->
+		<ImageControlsOverlay
+			visible={showControls}
+			{cropperRef}
+			onClose={handleCloseControls}
+		/>
 	</div>
 
-	{#if interactive}
-		<ImageControls
-			{isPortrait}
-			hasImage={!!cardStore.data.image.src}
-			zoom={cropperRef?.getZoom() ?? 1}
-			minZoom={cropperRef?.getMinZoom() ?? 1}
-			maxZoom={cropperRef?.getMaxZoom() ?? 10}
-			onOrientationChange={handleOrientationChange}
-			onRotate={rotateImage}
-			onReset={handleReset}
-			onZoomChange={handleZoomChange}
-		/>
+	<!-- Hint for mobile -->
+	{#if isMobile && cardStore.data.image.src && !showControls}
+		<p class="text-xs text-center text-base-content/50 mt-2">
+			タップして画像を調整
+		</p>
 	{/if}
 </div>

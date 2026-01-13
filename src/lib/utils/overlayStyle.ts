@@ -10,7 +10,7 @@ export const OUTPUT_SIZES = {
 };
 
 // 基準となるフォントサイズ（出力解像度での値）
-const BASE_STYLES = {
+const BASE_STYLES_LANDSCAPE = {
 	titleFontSize: 80,      // キャラクター名
 	subtitleFontSize: 60,   // DC/World
 	sectionFontSize: 40,    // セクションヘッダー
@@ -26,6 +26,25 @@ const BASE_STYLES = {
 	contentIndent: 16,      // コンテンツのインデント
 	copyrightFontSize: 24,  // コピーライト
 	copyrightPadding: 32,   // コピーライトの余白
+};
+
+// 縦長用（出力幅が小さいので値も小さく）
+const BASE_STYLES_PORTRAIT = {
+	titleFontSize: 48,
+	subtitleFontSize: 36,
+	sectionFontSize: 28,
+	contentFontSize: 24,
+	jobIconSize: 48,
+	sectionIconSize: 24,
+	padding: 24,
+	boxPadding: 24,
+	borderRadius: 24,
+	maxWidthRatio: 0.85,
+	lineSpacing: 1.3,
+	jobGap: 6,
+	contentIndent: 12,
+	copyrightFontSize: 18,
+	copyrightPadding: 24,
 };
 
 export interface OverlayStyles {
@@ -56,24 +75,25 @@ export function calculateOverlayStyles(
 	orientation: 'landscape' | 'portrait'
 ): OverlayStyles {
 	const outputSize = OUTPUT_SIZES[orientation];
+	const baseStyles = orientation === 'portrait' ? BASE_STYLES_PORTRAIT : BASE_STYLES_LANDSCAPE;
 	const scale = previewWidth / outputSize.width;
 
 	return {
-		titleFontSize: BASE_STYLES.titleFontSize * scale,
-		subtitleFontSize: BASE_STYLES.subtitleFontSize * scale,
-		sectionFontSize: BASE_STYLES.sectionFontSize * scale,
-		contentFontSize: BASE_STYLES.contentFontSize * scale,
-		jobIconSize: BASE_STYLES.jobIconSize * scale,
-		sectionIconSize: BASE_STYLES.sectionIconSize * scale,
-		padding: BASE_STYLES.padding * scale,
-		boxPadding: BASE_STYLES.boxPadding * scale,
-		borderRadius: BASE_STYLES.borderRadius * scale,
-		maxWidth: previewWidth * BASE_STYLES.maxWidthRatio,
-		lineSpacing: BASE_STYLES.lineSpacing,
-		jobGap: BASE_STYLES.jobGap * scale,
-		contentIndent: BASE_STYLES.contentIndent * scale,
-		copyrightFontSize: BASE_STYLES.copyrightFontSize * scale,
-		copyrightPadding: BASE_STYLES.copyrightPadding * scale,
+		titleFontSize: baseStyles.titleFontSize * scale,
+		subtitleFontSize: baseStyles.subtitleFontSize * scale,
+		sectionFontSize: baseStyles.sectionFontSize * scale,
+		contentFontSize: baseStyles.contentFontSize * scale,
+		jobIconSize: baseStyles.jobIconSize * scale,
+		sectionIconSize: baseStyles.sectionIconSize * scale,
+		padding: baseStyles.padding * scale,
+		boxPadding: baseStyles.boxPadding * scale,
+		borderRadius: baseStyles.borderRadius * scale,
+		maxWidth: previewWidth * baseStyles.maxWidthRatio,
+		lineSpacing: baseStyles.lineSpacing,
+		jobGap: baseStyles.jobGap * scale,
+		contentIndent: baseStyles.contentIndent * scale,
+		copyrightFontSize: baseStyles.copyrightFontSize * scale,
+		copyrightPadding: baseStyles.copyrightPadding * scale,
 	};
 }
 
@@ -82,21 +102,22 @@ export function calculateOverlayStyles(
  */
 export function getExportStyles(orientation: 'landscape' | 'portrait'): OverlayStyles {
 	const outputSize = OUTPUT_SIZES[orientation];
+	const baseStyles = orientation === 'portrait' ? BASE_STYLES_PORTRAIT : BASE_STYLES_LANDSCAPE;
 	return {
-		titleFontSize: BASE_STYLES.titleFontSize,
-		subtitleFontSize: BASE_STYLES.subtitleFontSize,
-		sectionFontSize: BASE_STYLES.sectionFontSize,
-		contentFontSize: BASE_STYLES.contentFontSize,
-		jobIconSize: BASE_STYLES.jobIconSize,
-		sectionIconSize: BASE_STYLES.sectionIconSize,
-		padding: BASE_STYLES.padding,
-		boxPadding: BASE_STYLES.boxPadding,
-		borderRadius: BASE_STYLES.borderRadius,
-		maxWidth: outputSize.width * BASE_STYLES.maxWidthRatio,
-		lineSpacing: BASE_STYLES.lineSpacing,
-		jobGap: BASE_STYLES.jobGap,
-		contentIndent: BASE_STYLES.contentIndent,
-		copyrightFontSize: BASE_STYLES.copyrightFontSize,
-		copyrightPadding: BASE_STYLES.copyrightPadding,
+		titleFontSize: baseStyles.titleFontSize,
+		subtitleFontSize: baseStyles.subtitleFontSize,
+		sectionFontSize: baseStyles.sectionFontSize,
+		contentFontSize: baseStyles.contentFontSize,
+		jobIconSize: baseStyles.jobIconSize,
+		sectionIconSize: baseStyles.sectionIconSize,
+		padding: baseStyles.padding,
+		boxPadding: baseStyles.boxPadding,
+		borderRadius: baseStyles.borderRadius,
+		maxWidth: outputSize.width * baseStyles.maxWidthRatio,
+		lineSpacing: baseStyles.lineSpacing,
+		jobGap: baseStyles.jobGap,
+		contentIndent: baseStyles.contentIndent,
+		copyrightFontSize: baseStyles.copyrightFontSize,
+		copyrightPadding: baseStyles.copyrightPadding,
 	};
 }
