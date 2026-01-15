@@ -1,88 +1,88 @@
 <script lang="ts">
-	import { cardStore } from '$lib/stores/cardStore.svelte';
-	import type { CroppedArea } from '$lib/types/card';
-	import { calculateOverlayStyles, type OverlayStyles } from '$lib/utils/overlayStyle';
-	import { rotateImageCanvas } from '$lib/utils/imageTransform';
-	import ImageCropper from './ImageCropper.svelte';
-	import TextOverlay from './TextOverlay.svelte';
-	import ImageControlsOverlay from './ImageControlsOverlay.svelte';
+import { cardStore } from '$lib/stores/cardStore.svelte';
+import type { CroppedArea } from '$lib/types/card';
+import { calculateOverlayStyles, type OverlayStyles } from '$lib/utils/overlayStyle';
+import { rotateImageCanvas } from '$lib/utils/imageTransform';
+import ImageCropper from './ImageCropper.svelte';
+import TextOverlay from './TextOverlay.svelte';
+import ImageControlsOverlay from './ImageControlsOverlay.svelte';
 
-	interface Props {
-		isMobile?: boolean;
-	}
+interface Props {
+  isMobile?: boolean;
+}
 
-	let { isMobile = false }: Props = $props();
+let { isMobile = false }: Props = $props();
 
-	let rotatedImageSrc = $state<string | null>(null);
-	let containerEl: HTMLDivElement | undefined = $state();
-	let overlayStyles = $state<OverlayStyles | null>(null);
-	let cropperRef: ImageCropper | undefined = $state();
-	let showControls = $state(false);
+let rotatedImageSrc = $state<string | null>(null);
+let containerEl: HTMLDivElement | undefined = $state();
+let overlayStyles = $state<OverlayStyles | null>(null);
+let cropperRef: ImageCropper | undefined = $state();
+let showControls = $state(false);
 
-	// カードの向きはストアのorientation設定から決定
-	const isPortrait = $derived(cardStore.data.design.orientation === 'portrait');
-	const aspectClass = $derived(isPortrait ? 'aspect-[3/4]' : 'aspect-[16/9]');
-	const aspect = $derived(isPortrait ? 3 / 4 : 16 / 9);
+// カードの向きはストアのorientation設定から決定
+const isPortrait = $derived(cardStore.data.design.orientation === 'portrait');
+const aspectClass = $derived(isPortrait ? 'aspect-[3/4]' : 'aspect-[16/9]');
+const aspect = $derived(isPortrait ? 3 / 4 : 16 / 9);
 
-	// Cropperに渡す画像（回転済み）
-	const displayImage = $derived(rotatedImageSrc ?? cardStore.data.image.src ?? undefined);
+// Cropperに渡す画像（回転済み）
+const displayImage = $derived(rotatedImageSrc ?? cardStore.data.image.src ?? undefined);
 
-	function handleCropComplete(area: CroppedArea) {
-		cardStore.updateCroppedArea(area);
-	}
+function handleCropComplete(area: CroppedArea) {
+  cardStore.updateCroppedArea(area);
+}
 
-	function handlePreviewClick() {
-		if (cardStore.data.image.src) {
-			showControls = !showControls;
-		}
-	}
+function handlePreviewClick() {
+  if (cardStore.data.image.src) {
+    showControls = !showControls;
+  }
+}
 
-	function handleCloseControls() {
-		showControls = false;
-	}
+function handleCloseControls() {
+  showControls = false;
+}
 
-	// 画像変更時
-	$effect(() => {
-		if (cardStore.data.image.src) {
-			const rotation = cardStore.data.image.rotation;
-			if (rotation === 0) {
-				rotatedImageSrc = null;
-			} else {
-				rotateImageCanvas(cardStore.data.image.src, rotation).then((result) => {
-					rotatedImageSrc = result.src;
-				});
-			}
-		}
-	});
+// 画像変更時
+$effect(() => {
+  if (cardStore.data.image.src) {
+    const rotation = cardStore.data.image.rotation;
+    if (rotation === 0) {
+      rotatedImageSrc = null;
+    } else {
+      rotateImageCanvas(cardStore.data.image.src, rotation).then((result) => {
+        rotatedImageSrc = result.src;
+      });
+    }
+  }
+});
 
-	// コンテナサイズを監視してオーバーレイスタイルを計算
-	$effect(() => {
-		if (!containerEl) return;
+// コンテナサイズを監視してオーバーレイスタイルを計算
+$effect(() => {
+  if (!containerEl) return;
 
-		const observer = new ResizeObserver((entries) => {
-			const entry = entries[0];
-			if (entry) {
-				const { width, height } = entry.contentRect;
-				if (width > 0 && height > 0) {
-					overlayStyles = calculateOverlayStyles(width, cardStore.data.design.orientation);
-				}
-			}
-		});
+  const observer = new ResizeObserver((entries) => {
+    const entry = entries[0];
+    if (entry) {
+      const { width, height } = entry.contentRect;
+      if (width > 0 && height > 0) {
+        overlayStyles = calculateOverlayStyles(width, cardStore.data.design.orientation);
+      }
+    }
+  });
 
-		observer.observe(containerEl);
-		return () => observer.disconnect();
-	});
+  observer.observe(containerEl);
+  return () => observer.disconnect();
+});
 
-	// 向き変更時にオーバーレイスタイルを再計算
-	$effect(() => {
-		const orientation = cardStore.data.design.orientation;
-		if (containerEl) {
-			const { width } = containerEl.getBoundingClientRect();
-			if (width > 0) {
-				overlayStyles = calculateOverlayStyles(width, orientation);
-			}
-		}
-	});
+// 向き変更時にオーバーレイスタイルを再計算
+$effect(() => {
+  const orientation = cardStore.data.design.orientation;
+  if (containerEl) {
+    const { width } = containerEl.getBoundingClientRect();
+    if (width > 0) {
+      overlayStyles = calculateOverlayStyles(width, orientation);
+    }
+  }
+});
 </script>
 
 <div class={isMobile ? 'sticky-preview' : 'layout-split-preview'}>

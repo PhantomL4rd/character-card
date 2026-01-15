@@ -1,22 +1,21 @@
 <script lang="ts">
-	import { Swords } from 'lucide-svelte';
-	import { cardStore } from '$lib/stores/cardStore.svelte';
-	import jobsData from '$lib/data/jobs.json';
+import { Swords } from 'lucide-svelte';
+import { cardStore } from '$lib/stores/cardStore.svelte';
+import jobsData from '$lib/data/jobs.json';
+import { Button } from '$lib/components/ui/button';
 
-	const jobsByRole = $derived(
-		jobsData.roles.map((role) => ({
-			...role,
-			jobs: jobsData.jobs.filter((job) => job.role === role.id)
-		}))
-	);
+const jobsByRole = $derived(
+  jobsData.roles.map((role) => ({
+    ...role,
+    jobs: jobsData.jobs.filter((job) => job.role === role.id)
+  }))
+);
 </script>
 
-<div class="form-control">
-	<label class="label">
-		<span class="label-text font-semibold flex items-center gap-1">
-			<Swords class="w-4 h-4" />
-			ジョブ
-		</span>
+<div class="space-y-2">
+	<label class="text-sm font-medium flex items-center gap-1">
+		<Swords class="w-4 h-4" />
+		ジョブ
 	</label>
 	<div class="space-y-3">
 		{#each jobsByRole as role}
@@ -26,16 +25,15 @@
 				</div>
 				<div class="flex flex-wrap gap-1">
 					{#each role.jobs as job}
-						<button
-							type="button"
-							class="btn btn-sm gap-1"
-							class:btn-primary={cardStore.data.playStyle.jobs.includes(job.id)}
-							class:btn-ghost={!cardStore.data.playStyle.jobs.includes(job.id)}
+						<Button
+							size="sm"
+							variant={cardStore.data.playStyle.jobs.includes(job.id) ? 'default' : 'ghost'}
 							onclick={() => cardStore.toggleJob(job.id)}
+							class="gap-1"
 						>
 							<img src="/icons/jobs/{job.nameEn}.png" alt={job.name} class="w-5 h-5" />
 							<span class="hidden sm:inline text-xs">{job.name}</span>
-						</button>
+						</Button>
 					{/each}
 				</div>
 			</div>

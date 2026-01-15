@@ -1,51 +1,51 @@
 <script lang="ts">
-	import { Gamepad2, Clock } from 'lucide-svelte';
-	import type { CardData } from '$lib/types/card';
-	import type { OverlayStyles } from '$lib/utils/overlayStyle';
-	import { getFontFamily } from '$lib/data/fonts';
-	import {
-		buildOverlayContent,
-		getAttitudeLabel,
-		getContentLabels,
-		getDayLabelsText,
-		getTimeLabelsText
-	} from '$lib/utils/overlayContent';
+import { Gamepad2, Clock } from 'lucide-svelte';
+import type { CardData } from '$lib/types/card';
+import type { OverlayStyles } from '$lib/utils/overlayStyle';
+import { getFontFamily } from '$lib/data/fonts';
+import {
+  buildOverlayContent,
+  getAttitudeLabel,
+  getContentLabels,
+  getDayLabelsText,
+  getTimeLabelsText
+} from '$lib/utils/overlayContent';
 
-	interface Props {
-		cardData: CardData;
-		overlayStyles: OverlayStyles;
-	}
+interface Props {
+  cardData: CardData;
+  overlayStyles: OverlayStyles;
+}
 
-	let { cardData, overlayStyles }: Props = $props();
+let { cardData, overlayStyles }: Props = $props();
 
-	const themeColors = $derived(
-		cardData.design.theme === 'dark'
-			? { bg: 'rgba(0, 0, 0, 0.6)', text: '#ffffff' }
-			: { bg: 'rgba(255, 255, 255, 0.6)', text: '#000000' }
-	);
+const themeColors = $derived(
+  cardData.design.theme === 'dark'
+    ? { bg: 'rgba(0, 0, 0, 0.6)', text: '#ffffff' }
+    : { bg: 'rgba(255, 255, 255, 0.6)', text: '#000000' }
+);
 
-	const fontFamily = $derived(getFontFamily(cardData.design.fontFamily));
+const fontFamily = $derived(getFontFamily(cardData.design.fontFamily));
 
-	const positionClasses = $derived(() => {
-		const v = { top: 'items-start', center: 'items-center', bottom: 'items-end' };
-		const h = { left: 'justify-start', center: 'justify-center', right: 'justify-end' };
-		const pos = cardData.design.textPosition;
-		return `${v[pos.vertical]} ${h[pos.horizontal]}`;
-	});
+const positionClasses = $derived(() => {
+  const v = { top: 'items-start', center: 'items-center', bottom: 'items-end' };
+  const h = { left: 'justify-start', center: 'justify-center', right: 'justify-end' };
+  const pos = cardData.design.textPosition;
+  return `${v[pos.vertical]} ${h[pos.horizontal]}`;
+});
 
-	// 共通ユーティリティでコンテンツを構築
-	const overlayContent = $derived(buildOverlayContent(cardData));
-	const { selectedJobs, hasPlayStyle, hasLoginTime } = $derived(overlayContent);
+// 共通ユーティリティでコンテンツを構築
+const overlayContent = $derived(buildOverlayContent(cardData));
+const { selectedJobs, hasPlayStyle, hasLoginTime } = $derived(overlayContent);
 
-	// ラベル取得に共通ヘルパーを使用
-	const attitudeLabel = $derived(getAttitudeLabel(cardData.playStyle.attitude));
-	const contentLabels = $derived(getContentLabels(cardData.playStyle.contents));
-	const dayLabels = $derived(getDayLabelsText(cardData.loginTime.days));
-	const timeLabels = $derived(getTimeLabelsText(cardData.loginTime.times));
+// ラベル取得に共通ヘルパーを使用
+const attitudeLabel = $derived(getAttitudeLabel(cardData.playStyle.attitude));
+const contentLabels = $derived(getContentLabels(cardData.playStyle.contents));
+const dayLabels = $derived(getDayLabelsText(cardData.loginTime.days));
+const timeLabels = $derived(getTimeLabelsText(cardData.loginTime.times));
 
-	// コピーライト：白文字＋黒縁取り（8方向text-shadow）
-	const copyrightOutline =
-		'-1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, -1px 0 0 #000, 1px 0 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 1px 1px 0 #000';
+// コピーライト：白文字＋黒縁取り（8方向text-shadow）
+const copyrightOutline =
+  '-1px -1px 0 #000, 0 -1px 0 #000, 1px -1px 0 #000, -1px 0 0 #000, 1px 0 0 #000, -1px 1px 0 #000, 0 1px 0 #000, 1px 1px 0 #000';
 </script>
 
 <!-- テキストオーバーレイ -->

@@ -1,24 +1,25 @@
 <script lang="ts">
-	import { cardStore } from '$lib/stores/cardStore.svelte';
-	import ImageUploader from './ImageUploader.svelte';
-	import WorldSelect from './WorldSelect.svelte';
-	import JobSelect from './JobSelect.svelte';
-	import PlayStyleSelect from './PlayStyleSelect.svelte';
-	import LoginTimeSelect from './LoginTimeSelect.svelte';
-	import ThemeSelector from './ThemeSelector.svelte';
-	import PositionSelector from './PositionSelector.svelte';
+import { cardStore } from '$lib/stores/cardStore.svelte';
+import ImageUploader from './ImageUploader.svelte';
+import WorldSelect from './WorldSelect.svelte';
+import JobSelect from './JobSelect.svelte';
+import PlayStyleSelect from './PlayStyleSelect.svelte';
+import LoginTimeSelect from './LoginTimeSelect.svelte';
+import ThemeSelector from './ThemeSelector.svelte';
+import PositionSelector from './PositionSelector.svelte';
+import { Input } from '$lib/components/ui/input';
+import { Separator } from '$lib/components/ui/separator';
 </script>
 
 <div class="space-y-6">
-	<div class="form-control">
-		<label class="label" for="character-name">
-			<span class="label-text font-semibold">キャラクター名 <span class="text-error">*</span></span>
+	<div class="space-y-2">
+		<label class="text-sm font-medium" for="character-name">
+			キャラクター名 <span class="text-destructive">*</span>
 		</label>
-		<input
+		<Input
 			id="character-name"
 			type="text"
 			placeholder="Firstname Lastname"
-			class="input input-bordered w-full"
 			value={cardStore.data.characterName}
 			oninput={(e) => cardStore.updateCharacterName(e.currentTarget.value)}
 		/>
@@ -28,17 +29,26 @@
 
 	<ImageUploader />
 
-	<div class="divider">プレイスタイル</div>
+	<div class="relative">
+		<Separator />
+		<span class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-xs text-muted-foreground">プレイスタイル</span>
+	</div>
 
 	<PlayStyleSelect />
 
 	<JobSelect />
 
-	<div class="divider">ログイン時間</div>
+	<div class="relative">
+		<Separator />
+		<span class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-xs text-muted-foreground">ログイン時間</span>
+	</div>
 
 	<LoginTimeSelect />
 
-	<div class="divider">デザイン</div>
+	<div class="relative">
+		<Separator />
+		<span class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-2 text-xs text-muted-foreground">デザイン</span>
+	</div>
 
 	<div class="flex flex-wrap gap-6">
 		<ThemeSelector />

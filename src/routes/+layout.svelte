@@ -1,9 +1,12 @@
 <script>
-	import '../app.css';
+import '../app.css';
+import { ModeWatcher } from 'mode-watcher';
 
-	let { children } = $props();
+let { children } = $props();
 </script>
 
-<div class="min-h-screen bg-base-200">
+<ModeWatcher />
+
+<div class="min-h-screen bg-background">
 	{@render children()}
 </div>

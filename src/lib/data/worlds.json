@@ -3,12 +3,30 @@
 		{
 			"name": "Elemental",
 			"region": "Japan",
-			"worlds": ["Aegis", "Atomos", "Carbuncle", "Garuda", "Gungnir", "Kujata", "Tonberry", "Typhon"]
+			"worlds": [
+				"Aegis",
+				"Atomos",
+				"Carbuncle",
+				"Garuda",
+				"Gungnir",
+				"Kujata",
+				"Tonberry",
+				"Typhon"
+			]
 		},
 		{
 			"name": "Gaia",
 			"region": "Japan",
-			"worlds": ["Alexander", "Bahamut", "Durandal", "Fenrir", "Ifrit", "Ridill", "Tiamat", "Ultima"]
+			"worlds": [
+				"Alexander",
+				"Bahamut",
+				"Durandal",
+				"Fenrir",
+				"Ifrit",
+				"Ridill",
+				"Tiamat",
+				"Ultima"
+			]
 		},
 		{
 			"name": "Mana",
@@ -18,22 +36,58 @@
 		{
 			"name": "Meteor",
 			"region": "Japan",
-			"worlds": ["Belias", "Mandragora", "Ramuh", "Shinryu", "Unicorn", "Valefor", "Yojimbo", "Zeromus"]
+			"worlds": [
+				"Belias",
+				"Mandragora",
+				"Ramuh",
+				"Shinryu",
+				"Unicorn",
+				"Valefor",
+				"Yojimbo",
+				"Zeromus"
+			]
 		},
 		{
 			"name": "Aether",
 			"region": "North America",
-			"worlds": ["Adamantoise", "Cactuar", "Faerie", "Gilgamesh", "Jenova", "Midgardsormr", "Sargatanas", "Siren"]
+			"worlds": [
+				"Adamantoise",
+				"Cactuar",
+				"Faerie",
+				"Gilgamesh",
+				"Jenova",
+				"Midgardsormr",
+				"Sargatanas",
+				"Siren"
+			]
 		},
 		{
 			"name": "Primal",
 			"region": "North America",
-			"worlds": ["Behemoth", "Excalibur", "Exodus", "Famfrit", "Hyperion", "Lamia", "Leviathan", "Ultros"]
+			"worlds": [
+				"Behemoth",
+				"Excalibur",
+				"Exodus",
+				"Famfrit",
+				"Hyperion",
+				"Lamia",
+				"Leviathan",
+				"Ultros"
+			]
 		},
 		{
 			"name": "Crystal",
 			"region": "North America",
-			"worlds": ["Balmung", "Brynhildr", "Coeurl", "Diabolos", "Goblin", "Malboro", "Mateus", "Zalera"]
+			"worlds": [
+				"Balmung",
+				"Brynhildr",
+				"Coeurl",
+				"Diabolos",
+				"Goblin",
+				"Malboro",
+				"Mateus",
+				"Zalera"
+			]
 		},
 		{
 			"name": "Dynamis",
@@ -43,7 +97,16 @@
 		{
 			"name": "Chaos",
 			"region": "Europe",
-			"worlds": ["Cerberus", "Louisoix", "Moogle", "Omega", "Phantom", "Ragnarok", "Sagittarius", "Spriggan"]
+			"worlds": [
+				"Cerberus",
+				"Louisoix",
+				"Moogle",
+				"Omega",
+				"Phantom",
+				"Ragnarok",
+				"Sagittarius",
+				"Spriggan"
+			]
 		},
 		{
 			"name": "Light",

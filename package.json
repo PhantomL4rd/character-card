@@ -14,6 +14,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.10",
+    "@internationalized/date": "^3.10.1",
+    "@lucide/svelte": "^0.561.0",
     "@sveltejs/adapter-static": "^3.0.0",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^4.0.0",
@@ -24,9 +26,13 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
-    "daisyui": "^5.5.14",
+    "bits-ui": "^2.15.4",
+    "clsx": "^2.1.1",
     "lucide-svelte": "^0.562.0",
+    "mode-watcher": "^1.1.0",
     "svelte-easy-crop": "^5.0.0",
+    "tailwind-merge": "^3.4.0",
+    "tailwind-variants": "^3.2.2",
     "tailwindcss": "^4.1.18"
   },
   "type": "module"

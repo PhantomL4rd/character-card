@@ -1,6 +1,6 @@
 <script lang="ts">
-	import PlayStyleSelect from '../PlayStyleSelect.svelte';
-	import JobSelect from '../JobSelect.svelte';
+import PlayStyleSelect from '../PlayStyleSelect.svelte';
+import JobSelect from '../JobSelect.svelte';
 </script>
 
 <div class="space-y-6">

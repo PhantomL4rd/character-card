@@ -1,36 +1,38 @@
 <script lang="ts">
-	import { User, Palette, Clock, Download } from 'lucide-svelte';
-	import { cardStore } from '$lib/stores/cardStore.svelte';
-	import AccordionSection from './AccordionSection.svelte';
-	import ProgressIndicator from './ProgressIndicator.svelte';
-	import WorldSelect from './WorldSelect.svelte';
-	import ImageUploader from './ImageUploader.svelte';
-	import PlayStyleSelect from './PlayStyleSelect.svelte';
-	import JobSelect from './JobSelect.svelte';
-	import LoginTimeSelect from './LoginTimeSelect.svelte';
-	import ThemeSelector from './ThemeSelector.svelte';
-	import PositionSelector from './PositionSelector.svelte';
-	import FontSelector from './FontSelector.svelte';
+import { User, Palette, Clock, Download, Loader2 } from 'lucide-svelte';
+import { cardStore } from '$lib/stores/cardStore.svelte';
+import AccordionSection from './AccordionSection.svelte';
+import ProgressIndicator from './ProgressIndicator.svelte';
+import WorldSelect from './WorldSelect.svelte';
+import ImageUploader from './ImageUploader.svelte';
+import PlayStyleSelect from './PlayStyleSelect.svelte';
+import JobSelect from './JobSelect.svelte';
+import LoginTimeSelect from './LoginTimeSelect.svelte';
+import ThemeSelector from './ThemeSelector.svelte';
+import PositionSelector from './PositionSelector.svelte';
+import FontSelector from './FontSelector.svelte';
+import { Button } from '$lib/components/ui/button';
+import { Input } from '$lib/components/ui/input';
 
-	interface Props {
-		isExporting: boolean;
-		exportError: string | null;
-		onExport: () => void;
-	}
+interface Props {
+  isExporting: boolean;
+  exportError: string | null;
+  onExport: () => void;
+}
 
-	const { isExporting, exportError, onExport }: Props = $props();
+const { isExporting, exportError, onExport }: Props = $props();
 
-	type SectionId = 'basic' | 'playStyle' | 'loginTime' | 'design';
-	let expandedSection = $state<SectionId | null>('basic');
+type SectionId = 'basic' | 'playStyle' | 'loginTime' | 'design';
+let expandedSection = $state<SectionId | null>('basic');
 
-	function toggleSection(id: SectionId) {
-		expandedSection = expandedSection === id ? null : id;
-	}
+function toggleSection(id: SectionId) {
+  expandedSection = expandedSection === id ? null : id;
+}
 
-	// 基本情報セクションに警告が必要かどうか
-	const basicHasWarning = $derived(
-		cardStore.data.characterName.trim().length === 0 || cardStore.data.image.src === null
-	);
+// 基本情報セクションに警告が必要かどうか
+const basicHasWarning = $derived(
+  cardStore.data.characterName.trim().length === 0 || cardStore.data.image.src === null
+);
 </script>
 
 <div class="space-y-4">
@@ -52,18 +54,15 @@
 		>
 			{#snippet children()}
 				<div class="space-y-6">
-					<div class="form-control">
-						<label class="label" for="character-name">
-							<span class="label-text font-semibold flex items-center gap-1">
-								<User class="w-4 h-4" />
-								キャラクター名 <span class="text-error">*</span>
-							</span>
+					<div class="space-y-2">
+						<label class="text-sm font-medium flex items-center gap-1" for="character-name">
+							<User class="w-4 h-4" />
+							キャラクター名 <span class="text-destructive">*</span>
 						</label>
-						<input
+						<Input
 							id="character-name"
 							type="text"
 							placeholder="Firstname Lastname"
-							class="input input-bordered w-full "
 							value={cardStore.data.characterName}
 							oninput={(e) => cardStore.updateCharacterName(e.currentTarget.value)}
 						/>
@@ -125,25 +124,24 @@
 	<!-- Export Section -->
 	<div class="pt-4 space-y-3">
 		{#if exportError}
-			<div class="alert alert-error">
-				<span>{exportError}</span>
+			<div class="rounded-md border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
+				{exportError}
 			</div>
 		{/if}
 
-		<button
-			type="button"
-			class="btn btn-primary w-full "
-			class:btn-success={cardStore.canExport && !isExporting}
+		<Button
+			class="w-full"
+			variant={cardStore.canExport && !isExporting ? 'default' : 'secondary'}
 			disabled={!cardStore.canExport || isExporting}
 			onclick={onExport}
 		>
 			{#if isExporting}
-				<span class="loading loading-spinner loading-sm"></span>
+				<Loader2 class="w-5 h-5 animate-spin" />
 				生成中...
 			{:else}
 				<Download class="w-5 h-5" />
 				ダウンロード
 			{/if}
-		</button>
+		</Button>
 	</div>
 </div>
