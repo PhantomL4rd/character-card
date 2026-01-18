@@ -35,9 +35,11 @@ async function handleExport() {
 
 <div class="flex flex-col min-h-screen pb-16">
 	<!-- Header -->
-	<header class="flex items-center h-14 bg-primary text-primary-foreground px-4 gap-2">
-		<IdCard class="w-6 h-6" />
-		<h1 class="text-xl font-bold">キャラカウィザード</h1>
+	<header class="h-14 bg-primary text-primary-foreground">
+		<div class="flex items-center h-full max-w-2xl mx-auto px-4 gap-2">
+			<IdCard class="w-6 h-6" />
+			<h1 class="text-xl font-bold">キャラカウィザード</h1>
+		</div>
 	</header>
 
 	<!-- Form: スクロール可能 -->

@@ -19,7 +19,7 @@ const { currentStep, isExporting, exportError, onExport }: Props = $props();
 const isPortrait = $derived(cardStore.data.design.orientation === 'portrait');
 </script>
 
-<div class="p-4 space-y-4">
+<div class="p-4 space-y-4 max-w-2xl mx-auto">
 	<!-- プレビュー -->
 	<div class={isPortrait ? 'max-w-md mx-auto' : 'max-w-2xl mx-auto'}>
 		<CardPreview interactive={true} />
