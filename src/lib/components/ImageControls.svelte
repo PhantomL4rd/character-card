@@ -56,11 +56,11 @@ function handleZoomChange(value: number[]) {
 	<!-- 画像操作 -->
 	<div class="flex items-center gap-2">
 		<Button size="sm" variant="outline" class="flex-1 gap-1" onclick={onRotate}>
-			<RotateCw class="w-4 h-4" />
+			<RotateCw class="size-4" />
 			画像回転
 		</Button>
 		<Button size="sm" variant="ghost" class="flex-1 gap-1" onclick={onReset}>
-			<Undo class="w-4 h-4" />
+			<Undo class="size-4" />
 			リセット
 		</Button>
 	</div>

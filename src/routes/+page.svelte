@@ -33,12 +33,12 @@ async function handleExport() {
 	<title>キャラカウィザード</title>
 </svelte:head>
 
-<div class="flex flex-col min-h-screen pb-16">
+<div class="flex flex-col min-h-dvh pb-[calc(4rem+env(safe-area-inset-bottom))]">
 	<!-- Header -->
 	<header class="h-14 bg-primary text-primary-foreground">
 		<div class="flex items-center h-full max-w-2xl mx-auto px-4 gap-2">
-			<IdCard class="w-6 h-6" />
-			<h1 class="text-xl font-bold">キャラカウィザード</h1>
+			<IdCard class="size-6" />
+			<h1 class="text-xl font-bold text-balance">キャラカウィザード</h1>
 		</div>
 	</header>
 

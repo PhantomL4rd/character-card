@@ -12,7 +12,7 @@ const timeTypes = Object.entries(TIME_LABELS) as [TimeType, string][];
 <div class="space-y-4">
 	<div class="space-y-2">
 		<label class="text-sm font-medium flex items-center gap-1">
-			<Calendar class="w-4 h-4" />
+			<Calendar class="size-4" />
 			ログイン曜日
 		</label>
 		<div class="flex flex-wrap gap-2">
@@ -30,7 +30,7 @@ const timeTypes = Object.entries(TIME_LABELS) as [TimeType, string][];
 
 	<div class="space-y-2">
 		<label class="text-sm font-medium flex items-center gap-1">
-			<Clock class="w-4 h-4" />
+			<Clock class="size-4" />
 			ログイン時間帯
 		</label>
 		<div class="flex flex-wrap gap-2">

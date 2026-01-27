@@ -6,7 +6,7 @@ import { FONTS } from '$lib/data/fonts';
 
 <div class="space-y-2">
 	<label class="text-sm font-medium flex items-center gap-1">
-		<Type class="w-4 h-4" />
+		<Type class="size-4" />
 		フォント
 	</label>
 	<div class="flex flex-col gap-1">
@@ -18,7 +18,7 @@ import { FONTS } from '$lib/data/fonts';
 					value={font.id}
 					checked={cardStore.data.design.fontFamily === font.id}
 					onchange={() => cardStore.updateFontFamily(font.id)}
-					class="h-4 w-4 rounded-full border border-primary text-primary focus:ring-2 focus:ring-ring"
+					class="size-4 rounded-full border border-primary text-primary focus:ring-2 focus:ring-ring"
 				/>
 				<span class="text-sm" style="font-family: {font.fontFamily};">{font.name}</span>
 			</label>

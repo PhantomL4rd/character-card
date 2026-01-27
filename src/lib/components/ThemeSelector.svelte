@@ -5,7 +5,7 @@ import { cardStore } from '$lib/stores/cardStore.svelte';
 
 <div class="space-y-2">
 	<label class="text-sm font-medium flex items-center gap-1">
-		<SunMoon class="w-4 h-4" />
+		<SunMoon class="size-4" />
 		テーマ
 	</label>
 	<div class="flex gap-4">
@@ -16,7 +16,7 @@ import { cardStore } from '$lib/stores/cardStore.svelte';
 				value="dark"
 				checked={cardStore.data.design.theme === 'dark'}
 				onchange={() => cardStore.updateTheme('dark')}
-				class="h-4 w-4 rounded-full border border-primary text-primary focus:ring-2 focus:ring-ring"
+				class="size-4 rounded-full border border-primary text-primary focus:ring-2 focus:ring-ring"
 			/>
 			<span class="text-sm">白文字・黒背景</span>
 		</label>
@@ -28,7 +28,7 @@ import { cardStore } from '$lib/stores/cardStore.svelte';
 				value="light"
 				checked={cardStore.data.design.theme === 'light'}
 				onchange={() => cardStore.updateTheme('light')}
-				class="h-4 w-4 rounded-full border border-primary text-primary focus:ring-2 focus:ring-ring"
+				class="size-4 rounded-full border border-primary text-primary focus:ring-2 focus:ring-ring"
 			/>
 			<span class="text-sm">黒文字・白背景</span>
 		</label>

@@ -15,7 +15,7 @@ const isMaxSelected = $derived(cardStore.data.playStyle.contents.length >= MAX_C
 <div class="space-y-4">
 	<div class="space-y-2">
 		<label class="text-sm font-medium flex items-center gap-1">
-			<Gamepad2 class="w-4 h-4" />
+			<Gamepad2 class="size-4" />
 			コンテンツ種別
 			<span class="text-xs text-muted-foreground">（最大{MAX_CONTENTS}つ）</span>
 		</label>
@@ -36,7 +36,7 @@ const isMaxSelected = $derived(cardStore.data.playStyle.contents.length >= MAX_C
 
 	<div class="space-y-2">
 		<label class="text-sm font-medium flex items-center gap-1">
-			<Heart class="w-4 h-4" />
+			<Heart class="size-4" />
 			プレイ姿勢
 		</label>
 		<div class="flex flex-wrap gap-2">

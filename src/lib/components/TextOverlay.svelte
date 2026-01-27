@@ -20,8 +20,8 @@ let { cardData, overlayStyles }: Props = $props();
 
 const themeColors = $derived(
   cardData.design.theme === 'dark'
-    ? { bg: 'rgba(0, 0, 0, 0.6)', text: '#ffffff' }
-    : { bg: 'rgba(255, 255, 255, 0.6)', text: '#000000' }
+    ? { bg: 'rgba(0, 0, 0, 0.8)', text: '#ffffff' }
+    : { bg: 'rgba(255, 255, 255, 0.85)', text: '#000000' }
 );
 
 const fontFamily = $derived(getFontFamily(cardData.design.fontFamily));
@@ -61,7 +61,6 @@ const copyrightOutline =
 				padding: {overlayStyles.boxPadding}px;
 				border-radius: {overlayStyles.borderRadius}px;
 				max-width: {overlayStyles.maxWidth}px;
-				backdrop-filter: blur(4px);
 				font-family: {fontFamily};
 			"
 		>

@@ -1,5 +1,4 @@
 <script lang="ts">
-import { slide } from 'svelte/transition';
 import { ChevronDown, AlertCircle } from 'lucide-svelte';
 import type { Snippet, ComponentType } from 'svelte';
 
@@ -20,22 +19,22 @@ let { id, title, icon: Icon, isExpanded, hasWarning = false, children, onToggle 
 	<!-- Header / Toggle Button -->
 	<button
 		type="button"
-		class="w-full flex items-center justify-between p-4 text-left hover:bg-accent/50 transition-colors duration-150"
+		class="w-full flex items-center justify-between p-4 text-left hover:bg-accent/50"
 		aria-expanded={isExpanded}
 		aria-controls="accordion-content-{id}"
 		onclick={onToggle}
 	>
 		<div class="flex items-center gap-3">
-			<Icon class="w-5 h-5 text-primary" />
+			<Icon class="size-5 text-primary" />
 			<span class="font-semibold text-base">{title}</span>
 			{#if hasWarning}
 				<span class="text-amber-500" title="未入力の必須項目があります">
-					<AlertCircle class="w-4 h-4" />
+					<AlertCircle class="size-4" />
 				</span>
 			{/if}
 		</div>
 		<ChevronDown
-			class="w-5 h-5 text-muted-foreground transition-transform duration-300"
+			class="size-5 text-muted-foreground transition-transform duration-200"
 			style="transform: rotate({isExpanded ? 180 : 0}deg)"
 		/>
 	</button>
@@ -44,10 +43,26 @@ let { id, title, icon: Icon, isExpanded, hasWarning = false, children, onToggle 
 	{#if isExpanded}
 		<div
 			id="accordion-content-{id}"
-			class="px-4 pb-4"
-			transition:slide={{ duration: 300 }}
+			class="accordion-content px-4 pb-4"
 		>
 			{@render children()}
 		</div>
 	{/if}
 </div>
+
+<style>
+	.accordion-content {
+		animation: accordion-open 200ms ease-out;
+	}
+
+	@keyframes accordion-open {
+		from {
+			opacity: 0;
+			transform: translateY(-8px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>

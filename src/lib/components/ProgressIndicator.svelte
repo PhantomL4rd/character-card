@@ -18,16 +18,16 @@ const isComplete = $derived(progress() === 100);
 	<div class="flex items-center gap-3">
 		<div class="flex-1 h-2 bg-muted rounded-full overflow-hidden">
 			<div
-				class="h-full rounded-full transition-all duration-300 ease-out"
+				class="h-full w-full rounded-full origin-left transition-transform duration-200 ease-out"
 				class:bg-primary={!isComplete}
 				class:bg-green-500={isComplete}
-				style="width: {progress()}%"
+				style="transform: scaleX({progress() / 100})"
 			></div>
 		</div>
-		<span class="text-sm font-medium min-w-[3rem] text-right">
+		<span class="text-sm font-medium min-w-[3rem] text-right tabular-nums">
 			{#if isComplete}
 				<span class="text-green-500 flex items-center gap-1">
-					<Check class="w-4 h-4" />
+					<Check class="size-4" />
 					完了
 				</span>
 			{:else}

@@ -24,7 +24,7 @@ function triggerFileSelect() {
 
 <div class="space-y-2">
 	<label class="text-sm font-medium flex items-center gap-1">
-		<Image class="w-4 h-4" />
+		<Image class="size-4" />
 		スクリーンショット
 	</label>
 
@@ -40,11 +40,11 @@ function triggerFileSelect() {
 	{#if cardStore.data.image.src}
 		<div class="flex items-center gap-2">
 			<p class="text-sm text-green-600 flex items-center gap-1">
-				<Check class="w-4 h-4" />
+				<Check class="size-4" />
 				画像を読み込みました
 			</p>
 			<Button variant="ghost" size="sm" onclick={triggerFileSelect}>
-				<RefreshCw class="w-3 h-3" />
+				<RefreshCw class="size-3" />
 				変更
 			</Button>
 		</div>

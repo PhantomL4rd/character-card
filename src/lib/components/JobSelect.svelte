@@ -14,7 +14,7 @@ const jobsByRole = $derived(
 
 <div class="space-y-2">
 	<label class="text-sm font-medium flex items-center gap-1">
-		<Swords class="w-4 h-4" />
+		<Swords class="size-4" />
 		ジョブ
 	</label>
 	<div class="space-y-3">
@@ -31,7 +31,7 @@ const jobsByRole = $derived(
 							onclick={() => cardStore.toggleJob(job.id)}
 							class="gap-1"
 						>
-							<img src="/icons/jobs/{job.nameEn}.png" alt={job.name} class="w-5 h-5" />
+							<img src="/icons/jobs/{job.nameEn}.png" alt={job.name} class="size-5" />
 							<span class="hidden sm:inline text-xs">{job.name}</span>
 						</Button>
 					{/each}
