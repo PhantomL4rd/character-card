@@ -20,8 +20,8 @@ let { cardData, overlayStyles }: Props = $props();
 
 const themeColors = $derived(
   cardData.design.theme === 'dark'
-    ? { bg: 'rgba(0, 0, 0, 0.8)', text: '#ffffff' }
-    : { bg: 'rgba(255, 255, 255, 0.85)', text: '#000000' }
+    ? { bg: 'rgba(30, 30, 46, 0.8)', text: '#cdd6f4' }
+    : { bg: 'rgba(239, 241, 245, 0.85)', text: '#4c4f69' }
 );
 
 const fontFamily = $derived(getFontFamily(cardData.design.fontFamily));

@@ -62,7 +62,7 @@ async function drawBackgroundImage(
 
   if (!imageSrc) {
     // 画像がない場合はグレー背景
-    ctx.fillStyle = '#374151';
+    ctx.fillStyle = '#313244';
     ctx.fillRect(0, 0, outputSize.width, outputSize.height);
     return;
   }
@@ -121,8 +121,8 @@ async function drawTextOverlay(
 
   // テーマに応じた色設定
   const isDark = cardData.design.theme === 'dark';
-  const bgColor = isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)';
-  const textColor = isDark ? '#ffffff' : '#000000';
+  const bgColor = isDark ? 'rgba(30, 30, 46, 0.6)' : 'rgba(239, 241, 245, 0.6)';
+  const textColor = isDark ? '#cdd6f4' : '#4c4f69';
 
   // ユーザー選択フォント
   const fontFamily = getFontFamily(cardData.design.fontFamily);
