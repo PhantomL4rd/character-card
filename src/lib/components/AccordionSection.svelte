@@ -28,7 +28,7 @@ let { id, title, icon: Icon, isExpanded, hasWarning = false, children, onToggle 
 			<Icon class="size-5 text-primary" />
 			<span class="font-semibold text-base">{title}</span>
 			{#if hasWarning}
-				<span class="text-amber-500" title="未入力の必須項目があります">
+				<span class="text-warning" title="未入力の必須項目があります">
 					<AlertCircle class="size-4" />
 				</span>
 			{/if}

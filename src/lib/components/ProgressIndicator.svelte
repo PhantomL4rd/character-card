@@ -20,13 +20,13 @@ const isComplete = $derived(progress() === 100);
 			<div
 				class="h-full w-full rounded-full origin-left transition-transform duration-200 ease-out"
 				class:bg-primary={!isComplete}
-				class:bg-green-500={isComplete}
+				class:bg-success={isComplete}
 				style="transform: scaleX({progress() / 100})"
 			></div>
 		</div>
 		<span class="text-sm font-medium min-w-[3rem] text-right tabular-nums">
 			{#if isComplete}
-				<span class="text-green-500 flex items-center gap-1">
+				<span class="text-success flex items-center gap-1">
 					<Check class="size-4" />
 					完了
 				</span>

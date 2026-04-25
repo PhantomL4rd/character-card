@@ -39,7 +39,7 @@ function triggerFileSelect() {
 
 	{#if cardStore.data.image.src}
 		<div class="flex items-center gap-2">
-			<p class="text-sm text-green-600 flex items-center gap-1">
+			<p class="text-sm text-success flex items-center gap-1">
 				<Check class="size-4" />
 				画像を読み込みました
 			</p>
